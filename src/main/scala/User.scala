@@ -1,6 +1,5 @@
 import UnreliableWorker.MyTypeOfMessage
 import akka.actor._
-import com.sun.javaws.exceptions.InvalidArgumentException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
@@ -14,7 +13,7 @@ class User(unreliableWorker: ActorRef) extends Actor with DistributedStackTrace 
   def receive: Receive = {
     case MyTypeOfMessage(1) => println("wszystko ok!")
     case MyTypeOfMessage(0) =>
-      throw new InvalidArgumentException(Array("0 instead 1"))
+      throw new IllegalArgumentException("0 instead 1")
   }
 }
 
