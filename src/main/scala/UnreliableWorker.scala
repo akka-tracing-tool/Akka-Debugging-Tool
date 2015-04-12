@@ -7,10 +7,10 @@ object UnreliableWorker {
   case class MessageWithException(message: Any) {
     val stackTrace = Thread.currentThread().getStackTrace
   }
-  case class MyTypeOfMessage(message: Any) extends DistributedStackTrace
+  case class MyTypeOfMessage(message: Any) extends DistributedStackTraceMessage
 }
 
-trait DistributedStackTrace {
+trait DistributedStackTraceMessage {
   val stackTrace = Thread.currentThread().getStackTrace
 }
 
