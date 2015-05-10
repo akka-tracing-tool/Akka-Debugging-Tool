@@ -8,7 +8,13 @@ object User {
 }
 
 class User(unreliableWorker: ActorRef) extends Actor with DistributedStackTrace {
-  context.system.scheduler.schedule(1 seconds, 2 seconds, unreliableWorker, "value")
+  val cancellable = context.system.scheduler.schedule(1 seconds, 2 seconds, unreliableWorker, "value")
+
+  @throws[Exception](classOf[Exception])
+  override def postStop(): Unit = {
+    super.postStop()
+    cancellable.cancel()
+  }
 
   def receive: Receive = {
     case MyTypeOfMessage(1) => println("wszystko ok!")
