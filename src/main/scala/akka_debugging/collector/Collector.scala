@@ -1,14 +1,19 @@
+package akka_debugging.collector
+
 import java.io.FileWriter
 import java.util.UUID
 
-import Collector.{CollectorExceptionMessage, CollectorMessage}
-import akka.actor.{ActorRef, Actor}
+import akka.actor.{Actor, ActorRef}
+
 object Collector {
   case class CollectorMessage(actorRef: ActorRef, id: UUID, message: Any, stackTrace: Array[StackTraceElement])
   case class CollectorExceptionMessage(actorRef: ActorRef, id: UUID, exception: Exception)
 }
 
 class Collector extends Actor {
+
+  import Collector._
+
   val fileWriter = new FileWriter("collector.txt", true)
   def receive: Receive = {
     case CollectorMessage(actorRef, uuid, msg, stackTrace) =>

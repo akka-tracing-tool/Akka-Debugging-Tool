@@ -1,4 +1,5 @@
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
+import akka_debugging.collector.Collector
 
 object Runner {
   def main(args: Array[String]) {
