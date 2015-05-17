@@ -16,9 +16,6 @@ object Collector {
 }
 
 trait Collector extends Actor {
-
-  import Collector._
-
   private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit
 
   private[collector] def handleCollectorExceptionMessage(msg: CollectorExceptionMessage): Unit
@@ -37,9 +34,6 @@ trait Collector extends Actor {
 
 
 class FileCollector extends Collector {
-
-  import Collector._
-
   val fileWriter = new FileWriter("collector.txt", true)
 
   override private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit = msg match {
