@@ -75,3 +75,6 @@ crashlytics-build.properties
 
 # Collector
 collector.txt
+
+# Config
+src/main/resources/*.conf
