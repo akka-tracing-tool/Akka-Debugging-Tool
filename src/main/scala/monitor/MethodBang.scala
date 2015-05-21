@@ -1,11 +1,25 @@
 package monitor
 
-import akka.actor.ActorRef
+import java.io.File
+
+import akka.actor.{Props, ActorSystem, Actor, ActorRef}
+import com.typesafe.config.ConfigFactory
 import org.aspectj.lang.{JoinPoint, ProceedingJoinPoint}
 import org.aspectj.lang.annotation._
 
+class RemoteActor extends Actor {
+  override def receive: Receive = {
+    case msg: Any =>
+      println("REMOTE ACTOR: " + msg)
+  }
+}
+
 @Aspect
 class MethodBang {
+  val configFile = getClass.getClassLoader.getResource("remote_application.conf").getFile
+  val config = ConfigFactory.parseFile(new File(configFile))
+  val system = ActorSystem("RemoteSystem" , config)
+  val remote = system.actorOf(Props[RemoteActor], name="remote")
 
 //  @Before("execution(* akka.actor.ScalaActorRef.$bang(..)) && args(msg,..)")
 //  def beforeBangMethod(joinPoint: JoinPoint): Unit = {
@@ -42,6 +56,7 @@ class MethodBang {
   @Before("monitor.MethodBang.withinUnreliable() && args(msg,actorRef)")
   def aspectA(msg: AnyRef, actorRef: ActorRef): Unit = {
     println("bang method within UnreliableWorker: " + msg + " " + actorRef)
+    remote ! msg
   }
 
 //  @Pointcut("execution(* akka.actor.ScalaActorRef.$bang(..))")
