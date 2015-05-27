@@ -11,7 +11,6 @@ object Runner {
     val system = ActorSystem()
     val unreliableWorkerRef = system.actorOf(Props[UnreliableWorker], "unreliableWorker")
     val userRef = system.actorOf(User.props(unreliableWorkerRef), "user")
-    //    val collectorRef = system.actorOf(Props[FileCollector], "collector")
-    val collectorRef = system.actorOf(DatabaseCollector.props(config), "collector")
+    val collectorRef = system.actorOf(Props[Collector], "collector")
   }
 }

@@ -1,0 +1,11 @@
+<aspectj>
+    <aspects>
+        <aspect name="monitor.MethodBang"/>
+    </aspects>
+    <weaver options="-XnoInline">
+        <include within="*"/>
+        <include within="monitor.*"/>
+        <include within="akka.actor.*"/>
+        <include within="scala.util.*"/>
+    </weaver>
+</aspectj>
