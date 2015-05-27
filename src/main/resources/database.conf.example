@@ -1,4 +1,9 @@
-driver = "org.postgresql.Driver"
-url = "jdbc:postgresql://localhost:5432/<DB_NAME>"
-username = ""
-password = ""
+driver = "slick.driver.PostgresDriver$"
+db {
+  connectionPool = disabled
+  driver = "org.postgresql.Driver"
+  url = "jdbc:postgresql://localhost:5432/<DB_NAME>"
+  user = ""
+  password = ""
+  numThreads = 10
+}

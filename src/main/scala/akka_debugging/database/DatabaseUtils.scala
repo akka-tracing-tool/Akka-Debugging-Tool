@@ -1,14 +1,12 @@
 package akka_debugging.database
 
 import java.util.UUID
-import javax.sql.DataSource
 
 import com.typesafe.config._
-import org.apache.commons.dbcp.BasicDataSource
+import org.slf4j.{Logger, LoggerFactory}
 
-import scala.slick.driver.PostgresDriver.simple._
-import scala.slick.jdbc.meta.MTable
-
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 case class CollectorDBMessage(uuid: UUID,
                               actor: String,
@@ -24,67 +22,72 @@ case class CollectorDBExceptionMessage(uuid: UUID,
                                        id: Option[Long] = None)
 
 
-class CollectorDBMessages(tag: Tag) extends Table[CollectorDBMessage](tag, "messages") {
-
-  def id: Column[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc, O.NotNull)
-
-  def uuid: Column[UUID] = column[UUID]("uuid", O.NotNull)
-
-  def actor: Column[String] = column[String]("actor", O.NotNull, O.DBType("TEXT"))
-
-  def message: Column[String] = column[String]("message", O.NotNull, O.DBType("TEXT"))
-
-  def stackTrace: Column[String] = column[String]("stackTrace", O.NotNull, O.DBType("TEXT"))
-
-  override def * = (uuid, actor, message, stackTrace, id.?) <>(CollectorDBMessage.tupled, CollectorDBMessage.unapply)
-
-  def uuidIndex = index("messages_uuid_idx", uuid, unique = true)
-}
-
-class CollectorDBExceptionMessages(tag: Tag) extends Table[CollectorDBExceptionMessage](tag, "exceptions") {
-  def id: Column[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc, O.NotNull)
-
-  def uuid: Column[UUID] = column[UUID]("uuid", O.NotNull)
-
-  def actor: Column[String] = column[String]("actor", O.NotNull, O.DBType("TEXT"))
-
-  def exception: Column[String] = column[String]("exception", O.NotNull, O.DBType("TEXT"))
-
-  def stackTrace: Column[String] = column[String]("stackTrace", O.NotNull, O.DBType("TEXT"))
-
-  override def * =
-    (uuid, actor, exception, stackTrace, id.?) <>(CollectorDBExceptionMessage.tupled, CollectorDBExceptionMessage.unapply)
-
-  def uuidIndex = index("exceptions_uuid_idx", uuid, unique = true)
-}
-
-
 object DatabaseUtils {
-  def getDataSource(config: Config): DataSource = {
-    val ds = new BasicDataSource
-    ds.setDriverClassName(config.getString("database.driver"))
-    ds.setUsername(config.getString("database.username"))
-    ds.setPassword(config.getString("database.password"))
-    ds.setMaxActive(20)
-    ds.setMaxIdle(10)
-    ds.setInitialSize(10)
-    ds.setUrl(config.getString("database.url"))
-    ds
+  val logger: Logger = LoggerFactory.getLogger(DatabaseUtils.getClass)
+
+  import slick.backend.DatabaseConfig
+  import slick.driver.JdbcProfile
+  import slick.jdbc.meta._
+
+  val dc = DatabaseConfig.forConfig[JdbcProfile]("database", ConfigFactory.load("remote_application.conf"))
+
+  import dc.driver.api._
+
+  class CollectorDBMessages(tag: Tag) extends Table[CollectorDBMessage](tag, "messages") {
+
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+
+    def uuid = column[UUID]("uuid")
+
+    def actor = column[String]("actor")
+
+    def message = column[String]("message")
+
+    def stackTrace = column[String]("stackTrace")
+
+    override def * = (uuid, actor, message, stackTrace, id.?) <>(CollectorDBMessage.tupled, CollectorDBMessage.unapply)
+
+    def uuidIndex = index("messages_uuid_idx", uuid, unique = true)
   }
 
-  def init(config: Config): Unit = {
-    lazy val database = Database.forDataSource(getDataSource(config))
+  class CollectorDBExceptionMessages(tag: Tag) extends Table[CollectorDBExceptionMessage](tag, "exceptions") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+
+    def uuid = column[UUID]("uuid")
+
+    def actor = column[String]("actor")
+
+    def exception = column[String]("exception")
+
+    def stackTrace = column[String]("stackTrace")
+
+    override def * =
+      (uuid, actor, exception, stackTrace, id.?) <>(CollectorDBExceptionMessage.tupled, CollectorDBExceptionMessage.unapply)
+
+    def uuidIndex = index("exceptions_uuid_idx", uuid, unique = true)
+  }
+
+  def init(): Unit = {
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    val db = dc.db
     val messages = TableQuery[CollectorDBMessages]
     val exceptions = TableQuery[CollectorDBExceptionMessages]
 
-    database.withSession { implicit session =>
-      if (MTable.getTables("messages").list.isEmpty) {
-        messages.ddl.create
+    val f = db.run(MTable.getTables).map(
+      (tablesVector: Vector[MTable]) => {
+        val tables = tablesVector.toList.map((t: MTable) => t.name.name)
+        var f = Seq[Future[Unit]]()
+        if (!tables.contains("messages")) {
+          f :+= db.run(messages.schema.create)
+        }
+        if (!tables.contains("exceptions")) {
+          f :+= db.run(exceptions.schema.create)
+        }
+        Future.sequence(f)
       }
+    )
 
-      if (MTable.getTables("exceptions").list.isEmpty) {
-        exceptions.ddl.create
-      }
-    }
+    Await.result(f, 5 seconds)
   }
 }

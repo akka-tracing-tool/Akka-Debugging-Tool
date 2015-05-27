@@ -6,7 +6,8 @@ trait DistributedStackTraceMessage {
   val stackTrace = Thread.currentThread().getStackTrace
 }
 
-trait DistributedStackTrace { self: Actor =>
+trait DistributedStackTrace {
+  self: Actor =>
   override def aroundReceive(receive: Actor.Receive, msg: Any): Unit = {
     try {
       receive.applyOrElse(msg, unhandled)
@@ -16,7 +17,7 @@ trait DistributedStackTrace { self: Actor =>
         val oldStackTrace = exception.getStackTrace
         val newStackTrace = oldStackTrace ++ msg.asInstanceOf[DistributedStackTraceMessage].stackTrace
         exception.setStackTrace(newStackTrace)
-      throw exception
+        throw exception
     }
   }
 }

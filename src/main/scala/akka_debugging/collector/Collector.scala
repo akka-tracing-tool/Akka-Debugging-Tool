@@ -4,8 +4,10 @@ import java.io.FileWriter
 import java.util.UUID
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka_debugging.collector.Collector.{CollectorExceptionMessage, CollectorMessage}
 import com.typesafe.config._
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 object Collector {
 
@@ -16,6 +18,9 @@ object Collector {
 }
 
 trait Collector extends Actor {
+
+  import Collector._
+
   private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit
 
   private[collector] def handleCollectorExceptionMessage(msg: CollectorExceptionMessage): Unit
@@ -34,6 +39,9 @@ trait Collector extends Actor {
 
 
 class FileCollector extends Collector {
+
+  import Collector._
+
   val fileWriter = new FileWriter("collector.txt", true)
 
   override private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit = msg match {
@@ -59,28 +67,36 @@ object DatabaseCollector {
 
 class DatabaseCollector(config: Config) extends Collector {
 
+  import Collector._
+  import akka_debugging.database.DatabaseUtils._
   import akka_debugging.database._
+  import slick.backend.DatabaseConfig
+  import slick.driver.JdbcProfile
 
-  import scala.slick.driver.PostgresDriver.simple._
+  val dc = DatabaseConfig.forConfig[JdbcProfile]("database", config)
 
-  lazy val database = Database.forDataSource(DatabaseUtils.getDataSource(config))
+  import dc.driver.api._
+
+  val db = dc.db
   val messages = TableQuery[CollectorDBMessages]
   val exceptions = TableQuery[CollectorDBExceptionMessages]
 
   override private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit = msg match {
     case CollectorMessage(actorRef, uuid, message, stackTrace) =>
       val niceStackTrace = filterStackTrace(stackTrace)
-      database.withSession { implicit session =>
+      val f = db.run(DBIO.seq(
         messages += CollectorDBMessage(uuid, actorRef.toString, message.toString, niceStackTrace.mkString("\n"))
-      }
+      ))
+      Await.result(f, 5 seconds)
   }
 
   override private[collector] def handleCollectorExceptionMessage(msg: CollectorExceptionMessage): Unit = msg match {
     case CollectorExceptionMessage(actorRef: ActorRef, uuid: UUID, exception: Exception) =>
       val niceStackTrace = filterStackTrace(exception.getStackTrace)
-      database.withSession { implicit session =>
+      val f = db.run(DBIO.seq(
         exceptions += CollectorDBExceptionMessage(uuid, actorRef.toString, exception.getClass.getCanonicalName,
           niceStackTrace.mkString("\n"))
-      }
+      ))
+      Await.result(f, 5 seconds)
   }
 }
