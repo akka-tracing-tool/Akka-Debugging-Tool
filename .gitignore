@@ -77,4 +77,4 @@ crashlytics-build.properties
 collector.txt
 
 # Config
-src/main/resources/*.conf
+src/main/resources/database.conf

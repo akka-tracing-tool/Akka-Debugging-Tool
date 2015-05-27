@@ -1,12 +1,6 @@
 package akka_debugging
 
-import java.util.UUID
-
 import akka.actor.Actor
-import akka.util.Timeout
-import akka_debugging.collector.Collector.{CollectorExceptionMessage, CollectorMessage}
-
-import scala.concurrent.duration._
 
 trait DistributedStackTraceMessage {
   val stackTrace = Thread.currentThread().getStackTrace
