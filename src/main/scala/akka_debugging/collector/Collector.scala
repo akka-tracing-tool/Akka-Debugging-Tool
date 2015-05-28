@@ -25,7 +25,7 @@ trait Collector extends Actor {
 
   private[collector] def handleCollectorExceptionMessage(msg: CollectorExceptionMessage): Unit
 
-  def filterStackTrace(stackTrace: Array[StackTraceElement]): Array[StackTraceElement] = {
+  private[collector] def filterStackTrace(stackTrace: Array[StackTraceElement]): Array[StackTraceElement] = {
     stackTrace.filter(el => !el.toString.startsWith("akka") && !el.toString.startsWith("scala"))
   }
 
