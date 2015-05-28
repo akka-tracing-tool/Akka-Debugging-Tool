@@ -84,19 +84,15 @@ class DatabaseCollector(config: Config) extends Collector {
   override private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit = msg match {
     case CollectorMessage(actorRef, uuid, message, stackTrace) =>
       val niceStackTrace = filterStackTrace(stackTrace)
-      val f = db.run(DBIO.seq(
-        messages += CollectorDBMessage(uuid, actorRef.toString, message.toString, niceStackTrace.mkString("\n"))
-      ))
+      val f = db.run(messages += CollectorDBMessage(uuid, actorRef.toString, message.toString, niceStackTrace.mkString("\n")))
       Await.result(f, 5 seconds)
   }
 
   override private[collector] def handleCollectorExceptionMessage(msg: CollectorExceptionMessage): Unit = msg match {
     case CollectorExceptionMessage(actorRef: ActorRef, uuid: UUID, exception: Exception) =>
       val niceStackTrace = filterStackTrace(exception.getStackTrace)
-      val f = db.run(DBIO.seq(
-        exceptions += CollectorDBExceptionMessage(uuid, actorRef.toString, exception.getClass.getCanonicalName,
-          niceStackTrace.mkString("\n"))
-      ))
+      val f = db.run(exceptions += CollectorDBExceptionMessage(uuid, actorRef.toString, exception.getClass.getCanonicalName,
+        niceStackTrace.mkString("\n")))
       Await.result(f, 5 seconds)
   }
 }
