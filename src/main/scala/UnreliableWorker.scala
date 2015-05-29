@@ -1,9 +1,13 @@
 import UnreliableWorker.MyTypeOfMessage
 import akka.actor._
+import akka_debugging.DistributedStackTraceMessage
+
 import scala.util.Random
 
 object UnreliableWorker {
+
   case class MyTypeOfMessage(message: Any) extends DistributedStackTraceMessage
+
 }
 
 class UnreliableWorker extends Actor {

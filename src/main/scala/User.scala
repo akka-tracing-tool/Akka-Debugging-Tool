@@ -1,5 +1,7 @@
 import UnreliableWorker.MyTypeOfMessage
 import akka.actor._
+import akka_debugging.DistributedStackTrace
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
