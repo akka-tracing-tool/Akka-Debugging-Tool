@@ -80,9 +80,11 @@ object DatabaseUtils {
         var f = Seq[Future[Unit]]()
         if (!tables.contains("messages")) {
           f :+= db.run(messages.schema.create)
+          logger.info("Creating table for messages...")
         }
         if (!tables.contains("exceptions")) {
           f :+= db.run(exceptions.schema.create)
+          logger.info("Creating table for exceptions...")
         }
         Future.sequence(f)
       }
