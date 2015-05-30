@@ -23,52 +23,32 @@ class MethodBang {
   val collector = system.actorOf(DatabaseCollector.props(config), name = "collector")
 
   //todo it only works for trait DistributedStackTrace
-  @Pointcut("call(* DistributedStackTrace$class.aroundReceive(..))")
+  @Pointcut("call(* akka_debugging.DistributedStackTrace$class.aroundReceive(..))")
   def aroundReceivePointcut(): Unit = {}
 
-//  @Pointcut("execution(* akka.actor.ActorCell.receiveMessage(..)) && withincode(User)")
-//  def aroundReceivePointcut(): Unit = {}
+  @Around("akka_debugging.monitor.MethodBang.aroundReceivePointcut()")
+  def aspectAroundReceive(joinPoint: ProceedingJoinPoint): AnyRef = {
+    val actor = joinPoint.getArgs()(0)
+    val receive = joinPoint.getArgs()(1)
+    val msgWrapper = joinPoint.getArgs()(2).asInstanceOf[MessageWrapper]
 
+    println("RECEIVED: " + msgWrapper.id + " -> " + msgWrapper.msg)
 
-//  @Before("monitor.MethodBang.aroundReceivePointcut()")
-//  def aspectAroundReceive(joinPoint: JoinPoint): Unit = {
-//    println("COSCOSCOSC")
-//  }
-
-
-  @Around("monitor.MethodBang.aroundReceivePointcut()")
-    def aspectAroundReceive(joinPoint: ProceedingJoinPoint): AnyRef = {
-    joinPoint.getArgs.foreach(println)
-//  joinPoint.proceed()
-      val msgWrapper = joinPoint.getArgs()(2).asInstanceOf[MessageWrapper]
-      println("RECEIVED: " + msgWrapper.id + " -> " + msgWrapper.msg)
-      val newArray = Array(joinPoint.getArgs()(0),
-        joinPoint.getArgs()(1),
-        msgWrapper.msg)
-
-      joinPoint.proceed(newArray)
-  //      println("ODEBrALEM wiadomosc (aroundReceive): " + joinPoint.getArgs()(2))
-
-    }
+    val newArgsArray = Array(actor, receive, msgWrapper.msg)
+    joinPoint.proceed(newArgsArray)
+  }
 
   //todo - what when scheduler send messages?
   @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && within(UnreliableWorker)") // && within(User) doesn't work
   def withinUnreliable(): Unit = {}
 
-  @Around("akka_debugging.monitor.MethodBang.withinUnreliable() && args(msg,actorRef)")// && target(callee)")
-  def aspectA(msg: AnyRef, actorRef: ActorRef, joinPoint: ProceedingJoinPoint): Any = { //, callee: ActorRef,
-    joinPoint.getArgs.foreach(println)
-    println()
-
+  @Around("akka_debugging.monitor.MethodBang.withinUnreliable() && args(msg,actorRef)")
+  def aspectA(msg: AnyRef, actorRef: ActorRef, joinPoint: ProceedingJoinPoint): Any = {
     val random = Random.nextInt()
     println("SENT: " + random + " -> " + joinPoint.getArgs()(0))
-    val newArray = Array[AnyRef](MessageWrapper(random, msg),
-      actorRef)
-    joinPoint.proceed(newArray)
 
-//    newArray.foreach(println)
-//    joinPoint.proceed(joinPoint.getArgs)
-//    joinPoint.proceed()
+    val newArgsArray = Array[AnyRef](MessageWrapper(random, msg), actorRef)
+    joinPoint.proceed(newArgsArray)
 
 //    println("bang method within UnreliableWorker: " + msg + " " + actorRef)
 //    collector ! CollectorMessage(callee, UUID.randomUUID(), msg, Thread.currentThread().getStackTrace.drop(2))
