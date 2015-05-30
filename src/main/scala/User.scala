@@ -10,7 +10,7 @@ object User {
 }
 
 class User(unreliableWorker: ActorRef) extends Actor with DistributedStackTrace {
-  val cancellable = context.system.scheduler.schedule(1 seconds, 2 seconds, unreliableWorker, "value")
+  val cancellable = context.system.scheduler.schedule(1 seconds, 5 seconds, unreliableWorker, "value")
 
   @throws[Exception](classOf[Exception])
   override def postStop(): Unit = {
