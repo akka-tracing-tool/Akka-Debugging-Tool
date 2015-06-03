@@ -6,7 +6,7 @@ import java.util.UUID
 import akka.actor.{Props, ActorSystem, Actor, ActorRef}
 import akka.actor.{ActorRef, ActorSystem}
 import akka_debugging.DistributedStackTrace
-import akka_debugging.collector.Collector.CollectorMessage
+import akka_debugging.collector.Collector.{RelationMessage, CollectorMessage}
 import akka_debugging.collector.DatabaseCollector
 import com.typesafe.config.ConfigFactory
 import org.aspectj.lang.{ProceedingJoinPoint, JoinPoint}
@@ -30,11 +30,14 @@ class MethodBang {
   @Around("akka_debugging.monitor.MethodBang.aroundReceivePointcut()")
   def aspectAroundReceive(joinPoint: ProceedingJoinPoint): AnyRef = {
     val actor = joinPoint.getArgs()(0)
-    println("before message: " + actor.asInstanceOf[DistributedStackTrace].ZMIENNA)
     val receive = joinPoint.getArgs()(1)
     val message = joinPoint.getArgs()(2) match {
       case msgWrapper: MessageWrapper =>
         println("RECEIVED: " + msgWrapper.id + " -> " + msgWrapper.msg)
+        actor match {
+          case act: DistributedStackTrace => act.ZMIENNA = msgWrapper.id
+          case _ =>
+        }
         collector ! CollectorMessage(msgWrapper.id, None, Some(actor.toString))
         msgWrapper.msg
       case msg =>
@@ -58,6 +61,13 @@ class MethodBang {
   def aspectA(msg: AnyRef, actorRef: ActorRef, joinPoint: ProceedingJoinPoint): Any = {
     val random = Random.nextInt()
     println("SENT: " + random + " -> " + joinPoint.getArgs()(0))
+
+    actorRef match {
+      case act: DistributedStackTrace =>
+        collector ! RelationMessage(act.ZMIENNA, random)
+        println("before message: " + act.ZMIENNA)
+      case _ =>
+    }
 
     collector ! CollectorMessage(random, Some(actorRef.toString()), None)
 

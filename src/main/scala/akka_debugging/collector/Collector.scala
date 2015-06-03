@@ -11,11 +11,13 @@ import scala.concurrent.duration._
 
 object Collector {
   case class CollectorMessage(id: Int, sender: Option[String], receiver: Option[String])
+  case class RelationMessage(id1: Int, id2: Int)
 }
 
 trait Collector extends Actor {
   import Collector._
   private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit
+  private[collector] def handleRelationMessage(msg: RelationMessage): Unit
   private[collector] def filterStackTrace(stackTrace: Array[StackTraceElement]): Array[StackTraceElement] = {
     stackTrace.filter(el => !el.toString.startsWith("akka") && !el.toString.startsWith("scala"))
   }
@@ -23,6 +25,8 @@ trait Collector extends Actor {
   override def receive: Receive = {
     case msg: CollectorMessage =>
       handleCollectorMessage(msg)
+    case msg: RelationMessage =>
+      handleRelationMessage(msg)
   }
 }
 //class FileCollector extends Collector {
@@ -56,6 +60,7 @@ class DatabaseCollector(config: Config) extends Collector {
 
   val db = dc.db
   val messages = TableQuery[CollectorDBMessages]
+  val relations = TableQuery[CollectorDBMessagesRelation]
 
   override private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit = msg match {
     case CollectorMessage(id, sender, None) =>
@@ -63,6 +68,12 @@ class DatabaseCollector(config: Config) extends Collector {
       Await.result(f, 5 seconds)
     case CollectorMessage(id, None, receiver) =>
       val f = db.run(messages.filter(_.id === id).map(_.receiver).update(receiver.get))
+      Await.result(f, 5 seconds)
+  }
+
+  override private[collector] def handleRelationMessage(msg: RelationMessage): Unit = msg match {
+    case RelationMessage(id1, id2) =>
+      val f = db.run(relations += CollectorDBMessageRelation(id1, id2))
       Await.result(f, 5 seconds)
   }
 }
