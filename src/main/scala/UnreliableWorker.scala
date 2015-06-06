@@ -1,6 +1,6 @@
 import UnreliableWorker.MyTypeOfMessage
 import akka.actor._
-import akka_debugging.DistributedStackTraceMessage
+import akka_debugging.{DistributedStackTrace, DistributedStackTraceMessage}
 
 import scala.util.Random
 
@@ -10,7 +10,7 @@ object UnreliableWorker {
 
 }
 
-class UnreliableWorker extends Actor {
+class UnreliableWorker extends Actor with DistributedStackTrace {
   def receive: Receive = {
     case "value" => {
       sender() ! (if (Random.nextInt() % 3 == 0) MyTypeOfMessage(0) else MyTypeOfMessage(1))

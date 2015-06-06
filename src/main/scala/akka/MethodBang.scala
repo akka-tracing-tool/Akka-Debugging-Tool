@@ -1,20 +1,17 @@
-package akka_debugging.monitor
+package akka
 
 import java.io.File
-import java.util.UUID
 
-import akka.actor.{Props, ActorSystem, Actor, ActorRef}
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor._
 import akka_debugging.DistributedStackTrace
 import akka_debugging.collector.Collector.{RelationMessage, CollectorMessage}
 import akka_debugging.collector.DatabaseCollector
 import com.typesafe.config.ConfigFactory
-import org.aspectj.lang.{ProceedingJoinPoint, JoinPoint}
+import org.aspectj.lang.{JoinPoint, ProceedingJoinPoint}
 import org.aspectj.lang.annotation._
 
 import scala.util.Random
 
-case class MessageWrapper(id: Int, msg: AnyRef)
 
 @Aspect
 class MethodBang {
@@ -27,9 +24,10 @@ class MethodBang {
   @Pointcut("call(* akka_debugging.DistributedStackTrace$class.aroundReceive(..))")
   def aroundReceivePointcut(): Unit = {}
 
-  @Around("akka_debugging.monitor.MethodBang.aroundReceivePointcut()")
+  @Around("akka.MethodBang.aroundReceivePointcut()")
   def aspectAroundReceive(joinPoint: ProceedingJoinPoint): AnyRef = {
     val actor = joinPoint.getArgs()(0)
+    println(actor.getClass)
     val receive = joinPoint.getArgs()(1)
     val message = joinPoint.getArgs()(2) match {
       case msgWrapper: MessageWrapper =>
@@ -54,20 +52,23 @@ class MethodBang {
   }
 
   //todo - what when scheduler send messages?
-  @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && (within(UnreliableWorker) || within(User))")// && (within(com.example.actors.FirstActor) || within(com.example.actors.SecondActor) || within(com.example.actors.ThirdActor))")// ") // && within(User) doesn't work
+//  @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && (within(com.example.actors.FirstActor) || within(com.example.actors.SecondActor) || within(com.example.actors.ThirdActor))")// ") // && within(User) doesn't work
+  @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && (within(UnreliableWorker) || within(User))")
   def withinUnreliable(): Unit = {}
 
-  @Around("akka_debugging.monitor.MethodBang.withinUnreliable() && args(msg,actorRef)") //actorRef is sender!
-  def aspectA(msg: AnyRef, actorRef: ActorRef, joinPoint: ProceedingJoinPoint): Any = {
+  @Around("akka.MethodBang.withinUnreliable()") //actorRef is sender!
+  def aspectA(joinPoint: ProceedingJoinPoint): Any = {
+    val msg = joinPoint.getArgs()(0)
+    val actorRef = joinPoint.getArgs()(1)
+    println(actorRef.asInstanceOf[RepointableActorRef].underlying.asInstanceOf[ActorCell].actor)
+    val actor = actorRef.asInstanceOf[RepointableActorRef].underlying.asInstanceOf[ActorCell].actor
+
     val random = Random.nextInt()
     println("SENT: " + random + " -> " + joinPoint.getArgs()(0))
 
-    actorRef match {
-      case act: DistributedStackTrace =>
-        collector ! RelationMessage(act.ZMIENNA, random)
-        println("before message: " + act.ZMIENNA)
-      case _ =>
-    }
+    val zm = actor.asInstanceOf[DistributedStackTrace].ZMIENNA
+    collector ! RelationMessage(zm, random)
+    println("before message: " + zm)
 
     collector ! CollectorMessage(random, Some(actorRef.toString()), None)
 

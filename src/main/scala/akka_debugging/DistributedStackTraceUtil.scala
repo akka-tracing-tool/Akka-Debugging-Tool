@@ -18,10 +18,10 @@ trait DistributedStackTrace {
     } catch {
       //TODO: make aspectj exception handler
       case exception: Exception => println("INTERCEPTED exception " + exception)
-        val oldStackTrace = exception.getStackTrace
-        val newStackTrace = oldStackTrace ++ msg.asInstanceOf[DistributedStackTraceMessage].stackTrace
-        exception.setStackTrace(newStackTrace)
-        throw exception
+//        val oldStackTrace = exception.getStackTrace
+//        val newStackTrace = oldStackTrace ++ msg.asInstanceOf[DistributedStackTraceMessage].stackTrace
+//        exception.setStackTrace(newStackTrace)
+//        throw exception
     }
   }
 }
