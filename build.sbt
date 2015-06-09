@@ -13,9 +13,7 @@ libraryDependencies ++= Seq(
   specs2 % Test,
   // Database connections
   "com.typesafe.slick" %% "slick" % "3.0.0",
-  "postgresql" % "postgresql" % "9.1-901.jdbc4",
-  //Json
-  //  "com.google.code.gson" % "gson" % "2.3.1"
+  "postgresql" % "postgresql" % "9.1-901.jdbc4"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
