@@ -121,4 +121,8 @@ $(document).ready(function () {
     });
 
     s.startForceAtlas2({"adjustSizes": true, "edgeWeightInfluence": 0, "gravity": 10});
+
+    setTimeout(function () {
+        s.stopForceAtlas2();
+    }, 5000);
 });
