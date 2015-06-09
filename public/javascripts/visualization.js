@@ -33,9 +33,9 @@ $(document).ready(function () {
                 "id": senderName,
                 "label": sender,
                 "color": "#f00",
-                "size": 1,
-                x: Math.random(),
-                y: Math.random()
+                size: 15,
+                x: Math.random() * 300 | 100 * trace,
+                y: Math.random() * 200 | 100 * trace
             });
         }
 
@@ -46,9 +46,9 @@ $(document).ready(function () {
                 "id": receiverName,
                 "label": receiver,
                 "color": "#f00",
-                "size": 1,
-                x: Math.random(),
-                y: Math.random()
+                "size": 15,
+                x: Math.random() * 300 | 100 * trace,
+                y: Math.random() * 200 | 100 * trace
             });
         }
 
@@ -58,7 +58,7 @@ $(document).ready(function () {
             "target": receiverName,
             "color": "#000",
             "type": 'curvedArrow',
-            "size": 50
+            "size": 5
         });
 
         for (var i = 0; i < relations.length; i++) {
@@ -82,17 +82,17 @@ $(document).ready(function () {
             "label": "start",
             "size": 0,
             "color": "#000",
-            x: Math.random(),
-            y: Math.random()
+            x: Math.random() * 200 | 300 * traceNum,
+            y: Math.random() * 200 | 100 * traceNum
         });
         allNodes[senderName] = true;
         nodes.push({
             "id": receiverName,
             "label": receiver,
             "color": "#f00",
-            "size": 1,
-            x: Math.random(),
-            y: Math.random()
+            "size": 15,
+            x: Math.random() * 200 | 300 * traceNum,
+            y: Math.random() * 200 | 100 * traceNum
         });
         allNodes[receiverName] = true;
         edges.push({
@@ -101,7 +101,7 @@ $(document).ready(function () {
             "target": receiverName,
             "color": "#000",
             "type": 'curvedArrow',
-            "size": 50
+            "size": 5
         });
         dfs(allMessages[n], traceNum++);
     }
@@ -114,13 +114,25 @@ $(document).ready(function () {
             container: document.getElementById('graph'),
             type: 'canvas'
         },
-        "graph": {
-            "nodes": nodes,
-            "edges": edges
+        graph: {
+            nodes: nodes,
+            edges: edges
+        },
+        settings: {
+            minEdgeSize: 1,
+            maxEdgeSize: 3,
+            edgeLabelSize: 'proportional',
+            labelSize: 'proportional',
+            minNodeSize: 0,
+            maxNodeSize: 15,
+            minArrowSize: 10,
+            labelThreshold: 16,
+            defaultLabelSize: 20,
+            labelSizeRatio: 1.2
         }
     });
 
-    s.startForceAtlas2({"adjustSizes": true, "edgeWeightInfluence": 0, "gravity": 10});
+    s.startForceAtlas2({"adjustSizes": true, "edgeWeightInfluence": 0, "gravity": 1, "strongGravityMode": true});
 
     setTimeout(function () {
         s.stopForceAtlas2();
