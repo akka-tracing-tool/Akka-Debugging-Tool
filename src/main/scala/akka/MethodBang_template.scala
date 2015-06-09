@@ -27,7 +27,7 @@ class MethodBang {
   @Around("akka.MethodBang.aroundReceivePointcut()")
   def aspectAroundReceive(joinPoint: ProceedingJoinPoint): AnyRef = {
     val actor = joinPoint.getArgs()(0)
-    println(actor.getClass)
+//    println(actor.getClass)
     val receive = joinPoint.getArgs()(1)
     val message = joinPoint.getArgs()(2) match {
       case msgWrapper: MessageWrapper =>
@@ -60,7 +60,7 @@ class MethodBang {
   def aspectA(joinPoint: ProceedingJoinPoint): Any = {
     val msg = joinPoint.getArgs()(0)
     val actorRef = joinPoint.getArgs()(1)
-    println(actorRef.asInstanceOf[RepointableActorRef].underlying.asInstanceOf[ActorCell].actor)
+//    println(actorRef.asInstanceOf[RepointableActorRef].underlying.asInstanceOf[ActorCell].actor)
     val actor = actorRef.asInstanceOf[RepointableActorRef].underlying.asInstanceOf[ActorCell].actor
 
     val random = Random.nextInt()
@@ -68,9 +68,9 @@ class MethodBang {
 
     val zm = actor.asInstanceOf[DistributedStackTrace].ZMIENNA
     collector ! RelationMessage(zm, random)
-    println("before message: " + zm)
+//    println("before message: " + zm)
 
-    collector ! CollectorMessage(random, Some(actorRef.toString()), None)
+    collector ! CollectorMessage(random, Some(actor.toString), None)
 
     val newArgsArray = Array[AnyRef](MessageWrapper(random, msg), actorRef)
     joinPoint.proceed(newArgsArray)
