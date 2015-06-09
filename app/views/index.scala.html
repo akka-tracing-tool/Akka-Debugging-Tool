@@ -1,0 +1,14 @@
+@(messages: List[Message])(relations: List[MessageRelation])
+
+@main("Visualization tool") {
+    <p>This is a simple tool which enables to see the messages passed between actors.</p>
+    <script>
+        var messages = [
+            @Html(messages.map(_.toJsonString).mkString(",\n"))
+        ];
+        var relations = [
+            @Html(relations.map(_.toJsonString).mkString(",\n"))
+        ];
+    </script>
+    <div class="container" id="graph"></div>
+}
