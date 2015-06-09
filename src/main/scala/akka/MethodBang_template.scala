@@ -53,7 +53,7 @@ class MethodBang {
 
   //todo - what when scheduler send messages?
 //  @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && (within(com.example.actors.FirstActor) || within(com.example.actors.SecondActor) || within(com.example.actors.ThirdActor))")// ") // && within(User) doesn't work
-  @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && (within(UnreliableWorker) || within(User))")
+  @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && <<<ACTORS>>>")
   def withinUnreliable(): Unit = {}
 
   @Around("akka.MethodBang.withinUnreliable()") //actorRef is sender!
