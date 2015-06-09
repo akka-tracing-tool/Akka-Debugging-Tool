@@ -81,7 +81,7 @@ $(document).ready(function () {
             "id": senderName,
             "label": "start",
             "size": 0,
-            "color": "#f00",
+            "color": "#000",
             x: Math.random(),
             y: Math.random()
         });

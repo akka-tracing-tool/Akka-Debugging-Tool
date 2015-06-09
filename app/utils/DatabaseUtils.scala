@@ -2,12 +2,11 @@ package utils
 
 import com.typesafe.config.ConfigFactory
 import models.{Message, MessageRelation}
-import org.slf4j.LoggerFactory
 
 import scala.concurrent.Future
 
 object DatabaseUtils {
-  val logger = LoggerFactory.getLogger(getClass)
+  val logger = play.api.Logger.logger
 
   import slick.backend.DatabaseConfig
   import slick.driver.JdbcProfile
@@ -36,7 +35,7 @@ object DatabaseUtils {
   }
 
   def init(): Future[Unit] = {
-    import scala.concurrent.ExecutionContext.Implicits.global
+    import play.api.libs.concurrent.Execution.Implicits._
 
     val db = dc.db
     val messages = TableQuery[Messages]
