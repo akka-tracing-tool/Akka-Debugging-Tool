@@ -1,6 +1,5 @@
 package controllers
 
-import models.{Message, MessageRelation}
 import play.api.mvc._
 import utils.DatabaseUtils
 import utils.DatabaseUtils.{Messages, Relation}
@@ -20,14 +19,9 @@ class MainController extends Controller {
     val messagesListFuture = db.run(messages.to[List].result)
     val relationListFuture = db.run(relation.to[List].result)
 
-    val f = for {
+    for {
       messagesList <- messagesListFuture
       relationList <- relationListFuture
-    } yield (messagesList, relationList)
-
-    f.map({
-      case (messagesList: List[Message], relationList: List[MessageRelation]) =>
-        Ok(views.html.index(messagesList)(relationList))
-    })
+    } yield Ok(views.html.index(messagesList)(relationList))
   }
 }
