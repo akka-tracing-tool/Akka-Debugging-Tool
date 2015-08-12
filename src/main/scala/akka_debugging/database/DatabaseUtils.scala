@@ -7,8 +7,8 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
 case class CollectorDBMessage(id: Int,
-                            sender: String,
-                            receiver: Option[String] = None)
+                              sender: String,
+                              receiver: Option[String] = None)
 
 case class CollectorDBMessageRelation(id1: Int, id2: Int)
 
@@ -26,8 +26,8 @@ object DatabaseUtils {
   class CollectorDBMessages(tag: Tag) extends Table[CollectorDBMessage](tag, "messages") {
     def id = column[Int]("id", O.PrimaryKey)
     def sender = column[String]("sender")
-    def receiver = column[String]("receiver", O.Nullable) // -.- postgres (deprecated)
-    override def * = (id, sender, receiver.?) <>(CollectorDBMessage.tupled, CollectorDBMessage.unapply)
+    def receiver = column[Option[String]]("receiver")
+    override def * = (id, sender, receiver) <> (CollectorDBMessage.tupled, CollectorDBMessage.unapply)
   }
 
   class CollectorDBMessagesRelation(tag: Tag) extends Table[CollectorDBMessageRelation](tag, "relation") {

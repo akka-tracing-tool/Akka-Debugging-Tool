@@ -1,9 +1,6 @@
 package akka_debugging.collector
 
-import java.io.FileWriter
-import java.util.UUID
-
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, Props}
 import com.typesafe.config._
 
 import scala.concurrent.Await
@@ -67,7 +64,7 @@ class DatabaseCollector(config: Config) extends Collector {
       val f = db.run(messages += CollectorDBMessage(id, sender.get, None))
       Await.result(f, 5 seconds)
     case CollectorMessage(id, None, receiver) =>
-      val f = db.run(messages.filter(_.id === id).map(_.receiver).update(receiver.get))
+      val f = db.run(messages.filter(_.id === id).map(_.receiver).update(receiver))
       Await.result(f, 5 seconds)
   }
 
