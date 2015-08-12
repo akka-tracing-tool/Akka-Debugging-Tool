@@ -1,26 +1,16 @@
 package akka_debugging.database
 
-import java.util.UUID
-
 import com.typesafe.config._
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-case class CollectorDBMessage(uuid: UUID,
-                              actor: String,
-                              message: String,
-                              stackTrace: String,
-                              id: Option[Long] = None)
+case class CollectorDBMessage(id: Int,
+                              sender: String,
+                              receiver: Option[String] = None)
 
-
-case class CollectorDBExceptionMessage(uuid: UUID,
-                                       actor: String,
-                                       exception: String,
-                                       stackTrace: String,
-                                       id: Option[Long] = None)
-
+case class CollectorDBMessageRelation(id1: Int, id2: Int)
 
 object DatabaseUtils {
   val logger: Logger = LoggerFactory.getLogger(DatabaseUtils.getClass)
@@ -34,37 +24,17 @@ object DatabaseUtils {
   import dc.driver.api._
 
   class CollectorDBMessages(tag: Tag) extends Table[CollectorDBMessage](tag, "messages") {
-
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-
-    def uuid = column[UUID]("uuid")
-
-    def actor = column[String]("actor")
-
-    def message = column[String]("message")
-
-    def stackTrace = column[String]("stackTrace")
-
-    override def * = (uuid, actor, message, stackTrace, id.?) <>(CollectorDBMessage.tupled, CollectorDBMessage.unapply)
-
-    def uuidIndex = index("messages_uuid_idx", uuid, unique = true)
+    def id = column[Int]("id", O.PrimaryKey)
+    def sender = column[String]("sender")
+    def receiver = column[Option[String]]("receiver")
+    override def * = (id, sender, receiver) <> (CollectorDBMessage.tupled, CollectorDBMessage.unapply)
   }
 
-  class CollectorDBExceptionMessages(tag: Tag) extends Table[CollectorDBExceptionMessage](tag, "exceptions") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-
-    def uuid = column[UUID]("uuid")
-
-    def actor = column[String]("actor")
-
-    def exception = column[String]("exception")
-
-    def stackTrace = column[String]("stackTrace")
-
-    override def * =
-      (uuid, actor, exception, stackTrace, id.?) <>(CollectorDBExceptionMessage.tupled, CollectorDBExceptionMessage.unapply)
-
-    def uuidIndex = index("exceptions_uuid_idx", uuid, unique = true)
+  class CollectorDBMessagesRelation(tag: Tag) extends Table[CollectorDBMessageRelation](tag, "relation") {
+    def id1 = column[Int]("id1")
+    def id2 = column[Int]("id2")
+    def pk = primaryKey("pk", (id1, id2))
+    override def * = (id1, id2) <> (CollectorDBMessageRelation.tupled, CollectorDBMessageRelation.unapply)
   }
 
   def init(): Unit = {
@@ -72,7 +42,7 @@ object DatabaseUtils {
 
     val db = dc.db
     val messages = TableQuery[CollectorDBMessages]
-    val exceptions = TableQuery[CollectorDBExceptionMessages]
+    val relation = TableQuery[CollectorDBMessagesRelation]
 
     val f = db.run(MTable.getTables).map(
       (tablesVector: Vector[MTable]) => {
@@ -82,9 +52,9 @@ object DatabaseUtils {
           f :+= db.run(messages.schema.create)
           logger.info("Creating table for messages...")
         }
-        if (!tables.contains("exceptions")) {
-          f :+= db.run(exceptions.schema.create)
-          logger.info("Creating table for exceptions...")
+        if (!tables.contains("relation")) {
+          f :+= db.run(relation.schema.create)
+          logger.info("Creating table for relations...")
         }
         Future.sequence(f)
       }

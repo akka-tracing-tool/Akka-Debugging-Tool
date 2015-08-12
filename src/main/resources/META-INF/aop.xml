@@ -1,6 +1,6 @@
 <aspectj>
     <aspects>
-        <aspect name="akka_debugging.monitor.MethodBang"/>
+        <aspect name="akka.MethodBang"/>
     </aspects>
     <weaver options="-XnoInline">
         <include within="*"/>

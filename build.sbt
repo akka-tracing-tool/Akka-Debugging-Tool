@@ -1,6 +1,8 @@
 name := "distr_stacktrace"
 
-version := "1.0"
+organization := "org.mariusz89016"
+
+version := "1.0_SNAPSHOT"
 
 scalaVersion := "2.11.6"
 
