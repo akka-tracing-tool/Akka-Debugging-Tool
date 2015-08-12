@@ -1,4 +1,4 @@
-package akka_debugging
+package pl.edu.agh.iet.akka_debugging
 
 import akka.actor.Actor
 

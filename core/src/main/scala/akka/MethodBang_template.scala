@@ -3,12 +3,12 @@ package akka
 import java.io.File
 
 import akka.actor._
-import akka_debugging.DistributedStackTrace
-import akka_debugging.collector.Collector.{RelationMessage, CollectorMessage}
-import akka_debugging.collector.DatabaseCollector
 import com.typesafe.config.ConfigFactory
-import org.aspectj.lang.{JoinPoint, ProceedingJoinPoint}
+import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation._
+import pl.edu.agh.iet.akka_debugging.DistributedStackTrace
+import pl.edu.agh.iet.akka_debugging.collector.Collector.{CollectorMessage, RelationMessage}
+import pl.edu.agh.iet.akka_debugging.collector.DatabaseCollector
 
 import scala.util.Random
 

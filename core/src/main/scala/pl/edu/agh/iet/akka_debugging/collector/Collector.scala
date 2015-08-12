@@ -1,7 +1,9 @@
-package akka_debugging.collector
+package pl.edu.agh.iet.akka_debugging.collector
 
 import akka.actor.{Actor, Props}
 import com.typesafe.config._
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils.{CollectorDBMessages, CollectorDBMessagesRelation}
+import pl.edu.agh.iet.akka_debugging.database.{CollectorDBMessage, CollectorDBMessageRelation}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -46,8 +48,6 @@ object DatabaseCollector {
 
 class DatabaseCollector(config: Config) extends Collector {
   import Collector._
-  import akka_debugging.database.DatabaseUtils._
-  import akka_debugging.database._
   import slick.backend.DatabaseConfig
   import slick.driver.JdbcProfile
 

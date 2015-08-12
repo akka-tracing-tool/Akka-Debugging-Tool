@@ -1,6 +1,6 @@
 import UnreliableWorker.MyTypeOfMessage
 import akka.actor._
-import akka_debugging.{DistributedStackTrace, DistributedStackTraceMessage}
+import pl.edu.agh.iet.akka_debugging.{DistributedStackTrace, DistributedStackTraceMessage}
 
 import scala.util.Random
 

@@ -1,4 +1,4 @@
-package akka_debugging.database
+package pl.edu.agh.iet.akka_debugging.database
 
 import com.typesafe.config._
 import org.slf4j.{Logger, LoggerFactory}

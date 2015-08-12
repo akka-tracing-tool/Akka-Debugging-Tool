@@ -1,5 +1,5 @@
 import akka.actor.{ActorSystem, Props}
-import akka_debugging.database.DatabaseUtils
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils
 
 object Runner {
   def main(args: Array[String]) {

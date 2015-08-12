@@ -6,6 +6,5 @@
         <include within="*"/>
         <include within="akka_debugging.monitor.*"/>
         <include within="akka.actor.*"/>
-        <!--<include within="scala.util.*"/>-->
     </weaver>
 </aspectj>
