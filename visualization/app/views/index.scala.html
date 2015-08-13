@@ -1,4 +1,6 @@
-@(messages: List[Message])(relations: List[MessageRelation])
+@import pl.edu.agh.iet.akka_debugging.database.{CollectorDBMessage, CollectorDBMessagesRelation}
+
+@(messages: List[CollectorDBMessage])(relations: List[CollectorDBMessagesRelation])
 
 @main("Visualization tool") {
     <p>This is a simple tool which enables to see the messages passed between actors.</p>

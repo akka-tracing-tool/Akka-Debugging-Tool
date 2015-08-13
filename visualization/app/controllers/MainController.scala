@@ -1,8 +1,8 @@
 package controllers
 
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils.{CollectorDBMessages, CollectorDBMessagesRelations}
 import play.api.mvc._
-import utils.DatabaseUtils
-import utils.DatabaseUtils.{Messages, Relation}
 
 class MainController extends Controller {
   val dc = DatabaseUtils.getDatabaseConfig
@@ -10,8 +10,8 @@ class MainController extends Controller {
   import dc.driver.api._
 
   val db = dc.db
-  val messages = TableQuery[Messages]
-  val relation = TableQuery[Relation]
+  val messages = TableQuery[CollectorDBMessages]
+  val relation = TableQuery[CollectorDBMessagesRelations]
 
   def index = Action.async {
     import play.api.libs.concurrent.Execution.Implicits._

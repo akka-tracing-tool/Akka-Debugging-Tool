@@ -3,14 +3,17 @@ package pl.edu.agh.iet.akka_debugging.database
 import com.typesafe.config._
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 case class CollectorDBMessage(id: Int,
                               sender: String,
-                              receiver: Option[String] = None)
+                              receiver: Option[String] = None) {
+  def toJsonString: String = "{\"id\":" + id + ", \"sender\": \"" + sender + "\", \"receiver\": \"" + receiver + "\"}"
+}
 
-case class CollectorDBMessageRelation(id1: Int, id2: Int)
+case class CollectorDBMessagesRelation(id1: Int, id2: Int) {
+  def toJsonString: String = "{\"id1\":" + id1 + ", \"id2\": " + id2 + "}"
+}
 
 object DatabaseUtils {
   val logger: Logger = LoggerFactory.getLogger(DatabaseUtils.getClass)
@@ -30,20 +33,17 @@ object DatabaseUtils {
     override def * = (id, sender, receiver) <> (CollectorDBMessage.tupled, CollectorDBMessage.unapply)
   }
 
-  class CollectorDBMessagesRelation(tag: Tag) extends Table[CollectorDBMessageRelation](tag, "relation") {
+  class CollectorDBMessagesRelations(tag: Tag) extends Table[CollectorDBMessagesRelation](tag, "relation") {
     def id1 = column[Int]("id1")
     def id2 = column[Int]("id2")
     def pk = primaryKey("pk", (id1, id2))
-    override def * = (id1, id2) <> (CollectorDBMessageRelation.tupled, CollectorDBMessageRelation.unapply)
+    override def * = (id1, id2) <> (CollectorDBMessagesRelation.tupled, CollectorDBMessagesRelation.unapply)
   }
 
-  def init(): Unit = {
-    import scala.concurrent.ExecutionContext.Implicits.global
-
+  def init(implicit ex: ExecutionContext): Future[Unit] = {
     val db = dc.db
     val messages = TableQuery[CollectorDBMessages]
-    val relation = TableQuery[CollectorDBMessagesRelation]
-
+    val relation = TableQuery[CollectorDBMessagesRelations]
     val f = db.run(MTable.getTables).map(
       (tablesVector: Vector[MTable]) => {
         val tables = tablesVector.toList.map((t: MTable) => t.name.name)
@@ -59,7 +59,12 @@ object DatabaseUtils {
         Future.sequence(f)
       }
     )
+    f.flatMap[Unit]((x: Future[Seq[Unit]]) => Future {
+      logger.info("Done")
+    })
+  }
 
-    Await.result(f, 5 seconds)
+  def getDatabaseConfig: DatabaseConfig[JdbcProfile] = {
+    dc
   }
 }

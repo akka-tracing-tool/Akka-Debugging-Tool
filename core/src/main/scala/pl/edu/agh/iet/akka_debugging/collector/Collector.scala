@@ -2,8 +2,8 @@ package pl.edu.agh.iet.akka_debugging.collector
 
 import akka.actor.{Actor, Props}
 import com.typesafe.config._
-import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils.{CollectorDBMessages, CollectorDBMessagesRelation}
-import pl.edu.agh.iet.akka_debugging.database.{CollectorDBMessage, CollectorDBMessageRelation}
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils.{CollectorDBMessages, CollectorDBMessagesRelations}
+import pl.edu.agh.iet.akka_debugging.database.{CollectorDBMessage, CollectorDBMessagesRelation}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -57,7 +57,7 @@ class DatabaseCollector(config: Config) extends Collector {
 
   val db = dc.db
   val messages = TableQuery[CollectorDBMessages]
-  val relations = TableQuery[CollectorDBMessagesRelation]
+  val relations = TableQuery[CollectorDBMessagesRelations]
 
   override private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit = msg match {
     case CollectorMessage(id, sender, None) =>
@@ -70,7 +70,7 @@ class DatabaseCollector(config: Config) extends Collector {
 
   override private[collector] def handleRelationMessage(msg: RelationMessage): Unit = msg match {
     case RelationMessage(id1, id2) =>
-      val f = db.run(relations += CollectorDBMessageRelation(id1, id2))
+      val f = db.run(relations += CollectorDBMessagesRelation(id1, id2))
       Await.result(f, 5 seconds)
   }
 }

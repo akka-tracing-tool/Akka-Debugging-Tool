@@ -1,3 +1,6 @@
+import play.sbt.PlayImport._
+import play.sbt.PlayScala
+import play.sbt.routes.RoutesKeys._
 import sbt.Keys._
 import sbt._
 
@@ -32,7 +35,8 @@ object Build extends Build {
     .settings(rootSettings: _*)
     .settings(name := "akka-debugging-tool")
     .aggregate(
-      core
+      core,
+      visualization
     )
 
   lazy val core = Project("akka-debugging-tool-core", file("core"))
@@ -42,4 +46,24 @@ object Build extends Build {
       libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.7.2",
       libraryDependencies += "org.aspectj" % "aspectjrt" % "1.7.2"
     )
+
+  lazy val visualization = Project("akka-debugging-tool-visualization", file("visualization"))
+    .enablePlugins(PlayScala)
+    .settings(rootSettings: _*)
+    .settings(
+      name := "akka-debugging-tool-visualization",
+//      scalaVersion := "2.11.6",
+      libraryDependencies ++= Seq(
+        jdbc,
+        cache,
+        ws,
+        specs2 % Test,
+        // Database connections
+        "com.typesafe.slick" %% "slick" % "3.0.0",
+        "postgresql" % "postgresql" % "9.1-901.jdbc4"
+      ),
+      resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
+      routesGenerator := InjectedRoutesGenerator
+    )
+    .dependsOn(core)
 }

@@ -1,5 +1,6 @@
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.{Application, GlobalSettings}
-import utils.DatabaseUtils
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
