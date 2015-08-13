@@ -1,7 +1,7 @@
-package com.example.actors
+package pl.edu.agh.iet.akka_debugging.examples.actors
 
-import akka.actor.{Props, ActorRef, Actor}
-import akka_debugging.DistributedStackTrace
+import akka.actor.{Actor, ActorRef, Props}
+import pl.edu.agh.iet.akka_debugging.DistributedStackTrace
 
 object FirstActor {
   def props(actorRef: ActorRef): Props = Props(classOf[FirstActor], actorRef)

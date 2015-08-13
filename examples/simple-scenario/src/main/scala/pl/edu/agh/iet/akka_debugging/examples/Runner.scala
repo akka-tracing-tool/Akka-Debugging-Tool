@@ -1,16 +1,19 @@
-package com.example
+package pl.edu.agh.iet.akka_debugging.examples
 
 import akka.actor.{ActorSystem, Props}
-import akka_debugging.database.DatabaseUtils
-import com.example.actors.{ThirdActor, SecondActor, FirstActor}
+import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils
+import pl.edu.agh.iet.akka_debugging.examples.actors.{FirstActor, SecondActor, ThirdActor}
 
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 import scala.util.Random
 
 object Runner {
   case class Message(random: Int)
 
   def main(args: Array[String]) {
-    DatabaseUtils.init()
+    Await.result(DatabaseUtils.init, 5 seconds)
     val system = ActorSystem()
     val thirdActor = system.actorOf(Props[ThirdActor], "thirdActor")
     val secondActor = system.actorOf(SecondActor.props(thirdActor), "secondActor")
@@ -21,5 +24,8 @@ object Runner {
       println(x)
       Thread.sleep(300)
     }
+    Thread.sleep(5000)
+    system.shutdown()
+    System.exit(0)
   }
 }

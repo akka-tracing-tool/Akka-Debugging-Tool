@@ -5,8 +5,7 @@ import sbt.Keys._
 import sbt._
 
 object Build extends Build {
-
-  val org = "pl.edu.agh.iet.akka-debugging-tool"
+  val org = "pl.edu.agh.iet"
   val appVersion = "0.0.1-SNAPSHOT"
 
   val ScalaVersion = "2.11.7"
@@ -23,9 +22,9 @@ object Build extends Build {
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
       "com.typesafe.akka" %% "akka-remote" % AkkaVersion,
-      "org.slf4j" % "slf4j-api" % Slf4jVersion,
       "com.typesafe" % "config" % ConfigVersion,
       "com.typesafe.slick" %% "slick" % SlickVersion,
+      "org.slf4j" % "slf4j-api" % Slf4jVersion,
       "org.slf4j" % "log4j-over-slf4j" % Slf4jVersion % "test",
       "org.scalatest" %% "scalatest" % ScalaTestVersion % "test"
     )
@@ -33,10 +32,15 @@ object Build extends Build {
 
   lazy val root = Project("akka-debugging-tool", file("."))
     .settings(rootSettings: _*)
-    .settings(name := "akka-debugging-tool")
+    .settings(
+      name := "akka-debugging-tool",
+      publish := {},
+      publishArtifact := false
+    )
     .aggregate(
       core,
-      visualization
+      visualization,
+      simpleScenarioExample
     )
 
   lazy val core = Project("akka-debugging-tool-core", file("core"))
@@ -52,18 +56,32 @@ object Build extends Build {
     .settings(rootSettings: _*)
     .settings(
       name := "akka-debugging-tool-visualization",
-//      scalaVersion := "2.11.6",
       libraryDependencies ++= Seq(
         jdbc,
         cache,
         ws,
         specs2 % Test,
         // Database connections
-        "com.typesafe.slick" %% "slick" % "3.0.0",
+        "com.typesafe.slick" %% "slick" % SlickVersion,
         "postgresql" % "postgresql" % "9.1-901.jdbc4"
       ),
       resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
       routesGenerator := InjectedRoutesGenerator
+    )
+    .dependsOn(core)
+
+  lazy val simpleScenarioExample = Project("akka-debugging-tool-examples-simple-scenario",
+    file("examples/simple-scenario"))
+    .settings(rootSettings: _*)
+    .settings(
+      name := "akka-debugging-tool-examples-simple-scenario",
+      sources in(Compile, doc) := Seq.empty,
+      publishArtifact in(Compile, packageDoc) := false,
+      libraryDependencies ++= Seq(
+        "com.typesafe.slick" %% "slick" % SlickVersion,
+        "postgresql" % "postgresql" % "9.1-901.jdbc4",
+        "org.slf4j" % "slf4j-simple" % Slf4jVersion
+      )
     )
     .dependsOn(core)
 }

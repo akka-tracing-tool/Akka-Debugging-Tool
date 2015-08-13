@@ -13,7 +13,7 @@ import pl.edu.agh.iet.akka_debugging.collector.DatabaseCollector
 import scala.util.Random
 
 
-@Aspect
+//@Aspect
 class MethodBang {
   val configFile = getClass.getClassLoader.getResource("remote_application.conf").getFile
   val config = ConfigFactory.parseFile(new File(configFile))
@@ -21,10 +21,10 @@ class MethodBang {
   val collector = system.actorOf(DatabaseCollector.props(config), name = "collector")
 
   //todo it only works for trait DistributedStackTrace
-  @Pointcut("call(* akka_debugging.DistributedStackTrace$class.aroundReceive(..))")
+  @Pointcut("call(* pl.edu.agh.iet.akka_debugging.DistributedStackTrace$class.aroundReceive(..))")
   def aroundReceivePointcut(): Unit = {}
 
-  @Around("akka.MethodBang.aroundReceivePointcut()")
+  @Around("akka.MethodBangAspect.aroundReceivePointcut()")
   def aspectAroundReceive(joinPoint: ProceedingJoinPoint): AnyRef = {
     val actor = joinPoint.getArgs()(0)
 //    println(actor.getClass)
@@ -56,7 +56,7 @@ class MethodBang {
   @Pointcut("call(* akka.actor.ScalaActorRef.$bang(..)) && <<<ACTORS>>>")
   def withinUnreliable(): Unit = {}
 
-  @Around("akka.MethodBang.withinUnreliable()") //actorRef is sender!
+  @Around("akka.MethodBangAspect.withinUnreliable()") //actorRef is sender!
   def aspectA(joinPoint: ProceedingJoinPoint): Any = {
     val msg = joinPoint.getArgs()(0)
     val actorRef = joinPoint.getArgs()(1)

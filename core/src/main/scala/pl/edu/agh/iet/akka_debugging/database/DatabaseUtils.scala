@@ -8,11 +8,12 @@ import scala.concurrent.{ExecutionContext, Future}
 case class CollectorDBMessage(id: Int,
                               sender: String,
                               receiver: Option[String] = None) {
-  def toJsonString: String = "{\"id\":" + id + ", \"sender\": \"" + sender + "\", \"receiver\": \"" + receiver + "\"}"
+  def toJsonString: String = "{\"id\": \"" + id + "\", \"sender\": \"" + sender + "\", \"receiver\": \"" +
+    receiver.getOrElse("null") + "\"}"
 }
 
 case class CollectorDBMessagesRelation(id1: Int, id2: Int) {
-  def toJsonString: String = "{\"id1\":" + id1 + ", \"id2\": " + id2 + "}"
+  def toJsonString: String = "{\"id1\":\"" + id1 + "\", \"id2\": \"" + id2 + "\"}"
 }
 
 object DatabaseUtils {

@@ -7,7 +7,7 @@ $(document).ready(function () {
 
     for (var i = 0; i < relations.length; i++) {
         if (relations[i]["id1"] == -1) {
-            dfsStartingNodes.push(relations[i]["id2"]);
+            dfsStartingNodes.push(relations[i]["id2"].toString());
         }
     }
 

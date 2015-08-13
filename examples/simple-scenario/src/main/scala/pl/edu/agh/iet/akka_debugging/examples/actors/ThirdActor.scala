@@ -1,7 +1,7 @@
-package com.example.actors
+package pl.edu.agh.iet.akka_debugging.examples.actors
 
 import akka.actor.Actor
-import akka_debugging.DistributedStackTrace
+import pl.edu.agh.iet.akka_debugging.DistributedStackTrace
 
 class ThirdActor extends Actor with DistributedStackTrace {
   override def receive: Receive = {
