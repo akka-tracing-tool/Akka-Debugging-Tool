@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="akka.MethodBang"/>
+    </aspects>
+    <weaver options="-XnoInline">
+        <include within="com.example.actors..*"/>
+        <include within="akka.*"/>
+    </weaver>
+</aspectj>
