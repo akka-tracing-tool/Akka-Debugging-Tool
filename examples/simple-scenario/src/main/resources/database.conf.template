@@ -1,0 +1,9 @@
+driver = "slick.driver.PostgresDriver$"
+db {
+  connectionPool = disabled
+  driver = "org.postgresql.Driver"
+  url = "jdbc:postgresql://<<HOST>>:<<PORT>>/<<DB_NAME>>"
+  user = <<USER>>
+  password = <<PASSWORD>>
+  numThreads = 10
+}
