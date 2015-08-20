@@ -1,3 +1,5 @@
 package akka
 
-case class MessageWrapper(id: Int, msg: AnyRef)
+import java.util.UUID
+
+case class MessageWrapper(id: UUID, msg: AnyRef)

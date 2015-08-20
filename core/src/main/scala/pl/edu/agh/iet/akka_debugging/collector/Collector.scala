@@ -1,5 +1,7 @@
 package pl.edu.agh.iet.akka_debugging.collector
 
+import java.util.UUID
+
 import akka.actor.{Actor, Props}
 import com.typesafe.config._
 import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils.{CollectorDBMessages, CollectorDBMessagesRelations}
@@ -9,8 +11,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 object Collector {
-  case class CollectorMessage(id: Int, sender: Option[String], receiver: Option[String])
-  case class RelationMessage(id1: Int, id2: Int)
+  case class CollectorMessage(id: UUID, sender: Option[String], receiver: Option[String])
+  case class RelationMessage(id1: UUID, id2: UUID)
 }
 
 trait Collector extends Actor {
