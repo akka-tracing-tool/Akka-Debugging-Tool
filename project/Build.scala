@@ -84,4 +84,19 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
+
+  lazy val oneToManyExample = Project("akka-debugging-tool-examples-one-to-many",
+    file("examples/one-to-many"))
+    .settings(rootSettings: _*)
+    .settings(
+      name := "akka-debugging-tool-examples-one-to-many",
+      sources in(Compile, doc) := Seq.empty,
+      publishArtifact in(Compile, packageDoc) := false,
+      libraryDependencies ++= Seq(
+        "com.typesafe.slick" %% "slick" % SlickVersion,
+        "postgresql" % "postgresql" % "9.1-901.jdbc4",
+        "org.slf4j" % "slf4j-simple" % Slf4jVersion
+      )
+    )
+    .dependsOn(core)
 }
