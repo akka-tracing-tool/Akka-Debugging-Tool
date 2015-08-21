@@ -7,11 +7,9 @@ import akka.actor._
 import com.typesafe.config.ConfigFactory
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation._
-import pl.edu.agh.iet.akka_debugging.TracingActor
+import pl.edu.agh.iet.akka_debugging.TracedActor
 import pl.edu.agh.iet.akka_debugging.collector.Collector.{CollectorMessage, RelationMessage}
 import pl.edu.agh.iet.akka_debugging.collector.DatabaseCollector
-
-import scala.util.Random
 
 
 //@Aspect
@@ -21,7 +19,7 @@ class MethodBang {
   val system = ActorSystem("RemoteSystem", config)
   val collector = system.actorOf(DatabaseCollector.props(config), name = "collector")
 
-  @Pointcut("call(* pl.edu.agh.iet.akka_debugging.TracingActor$class.aroundReceive(..))")
+  @Pointcut("call(* pl.edu.agh.iet.akka_debugging.TracedActor$class.aroundReceive(..))")
   def aroundReceivePointcut(): Unit = {}
 
   @Around("akka.MethodBangAspect.aroundReceivePointcut()")
@@ -31,7 +29,7 @@ class MethodBang {
     val message = joinPoint.getArgs()(2) match {
       case msgWrapper: MessageWrapper =>
         actor match {
-          case act: TracingActor => act.MessageWrapperId = msgWrapper.id
+          case act: TracedActor => act.MessageWrapperId = msgWrapper.id
           case _ =>
         }
         collector ! CollectorMessage(msgWrapper.id, None, Some(actor.toString))
@@ -52,7 +50,7 @@ class MethodBang {
     val actor = sender.asInstanceOf[RepointableActorRef].underlying.asInstanceOf[ActorCell].actor
 
     val uuid = UUID.randomUUID()
-    val msgId = actor.asInstanceOf[TracingActor].MessageWrapperId
+    val msgId = actor.asInstanceOf[TracedActor].MessageWrapperId
     collector ! RelationMessage(msgId, uuid)
     collector ! CollectorMessage(uuid, Some(actor.toString), None)
 

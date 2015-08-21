@@ -9,7 +9,7 @@ trait DistributedStackTraceMessage {
   val stackTrace = Thread.currentThread().getStackTrace
 }
 
-trait TracingActor {
+trait TracedActor {
   self: Actor =>
 
   var MessageWrapperId: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
