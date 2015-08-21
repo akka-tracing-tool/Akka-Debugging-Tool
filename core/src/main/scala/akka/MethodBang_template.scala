@@ -29,7 +29,7 @@ class MethodBang {
     val message = joinPoint.getArgs()(2) match {
       case msgWrapper: MessageWrapper =>
         actor match {
-          case act: TracedActor => act.MessageWrapperId = msgWrapper.id
+          case tracedActor: TracedActor => tracedActor.MessageWrapperId = msgWrapper.id
           case _ =>
         }
         collector ! CollectorMessage(msgWrapper.id, None, Some(actor.toString))
