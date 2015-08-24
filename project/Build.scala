@@ -1,3 +1,4 @@
+import pl.edu.agh.iet.akka_debugging.sbt.AkkaDebuggingPlugin
 import play.sbt.PlayImport._
 import play.sbt.PlayScala
 import play.sbt.routes.RoutesKeys._
@@ -14,6 +15,7 @@ object Build extends Build {
   val SlickVersion = "3.0.0"
   val ConfigVersion = "1.3.0"
   val AkkaVersion = "2.3.9"
+  val AspectJVersion = "1.7.2"
 
   val rootSettings = Seq(
     version := appVersion,
@@ -47,9 +49,19 @@ object Build extends Build {
     .settings(rootSettings: _*)
     .settings(
       name := "akka-debugging-tool-core",
-      libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.7.2",
-      libraryDependencies += "org.aspectj" % "aspectjrt" % "1.7.2"
+      libraryDependencies += "org.aspectj" % "aspectjweaver" % AspectJVersion,
+      libraryDependencies += "org.aspectj" % "aspectjrt" % AspectJVersion
     )
+
+  //  lazy val sbtAspectPlugin = Project("akka-debugging-sbt", file("sbt"))
+  //    .settings(rootSettings: _ *)
+  //    .settings(
+  //      name := "akka-debugging-sbt",
+  //      sbtPlugin := true,
+  //      libraryDependencies += "org.aspectj" % "aspectjweaver" % AspectJVersion,
+  //      libraryDependencies += "org.aspectj" % "aspectjrt" % AspectJVersion
+  //    )
+  //    .dependsOn(core)
 
   lazy val visualization = Project("akka-debugging-tool-visualization", file("visualization"))
     .enablePlugins(PlayScala)
@@ -105,4 +117,6 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
+    //    .dependsOn(sbtAspectPlugin)
+    .enablePlugins(AkkaDebuggingPlugin)
 }
