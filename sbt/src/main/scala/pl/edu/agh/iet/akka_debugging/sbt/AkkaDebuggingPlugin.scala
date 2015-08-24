@@ -1,5 +1,8 @@
 package pl.edu.agh.iet.akka_debugging.sbt
 
+import sbt._
+import AspectsGenerationTask._
+
 object AkkaDebuggingPlugin extends AutoPlugin {
 
   object Settings {

@@ -5,7 +5,7 @@ import com.typesafe.config.ConfigFactory
 object AspectsGenerationTask {
   //TODO: Real implementation
   def generateAspects(configurationFile: String): Unit = {
-    val config = ConfigFactory.parseResources(s"classpath:$configurationFile")
+    val config = ConfigFactory.load(configurationFile).atKey("test")
     println(config)
   }
 }
