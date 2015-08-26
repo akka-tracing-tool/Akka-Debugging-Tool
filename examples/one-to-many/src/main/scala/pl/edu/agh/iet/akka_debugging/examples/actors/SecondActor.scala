@@ -1,9 +1,9 @@
 package pl.edu.agh.iet.akka_debugging.examples.actors
 
 import akka.actor.Actor
-import pl.edu.agh.iet.akka_debugging.DistributedStackTrace
+import pl.edu.agh.iet.akka_debugging.TracedActor
 
-class SecondActor extends Actor with DistributedStackTrace {
+class SecondActor extends Actor with TracedActor {
   override def receive: Receive = {
     case a =>
       println(a)
