@@ -6,7 +6,7 @@ $(document).ready(function () {
     var dfsStartingNodes = [];
 
     for (var i = 0; i < relations.length; i++) {
-        if (relations[i]["id1"] == -1) {
+        if (relations[i]["id1"] == "00000000-0000-0000-0000-000000000000") {
             dfsStartingNodes.push(relations[i]["id2"].toString());
         }
     }
@@ -17,7 +17,7 @@ $(document).ready(function () {
         allMessages[messages[i]["id"].toString()] = message;
     }
 
-    allMessages["-1"] = {"id": -1, "sender": "start", "receiver": null, "visited": false};
+    allMessages["00000000-0000-0000-0000-000000000000"] = {"id": -1, "sender": "start", "receiver": null, "visited": false};
 
     var edgesNum = 0;
 
@@ -74,7 +74,7 @@ $(document).ready(function () {
     for (var i in dfsStartingNodes) {
         var n = dfsStartingNodes[i];
         var receiver = allMessages[n]["sender"];
-        allMessages["-1"]["receiver"] = receiver;
+        allMessages["00000000-0000-0000-0000-000000000000"]["receiver"] = receiver;
         var senderName = "trace" + traceNum + "#" + "start";
         var receiverName = "trace" + traceNum + "#" + receiver;
         nodes.push({

@@ -1,5 +1,7 @@
 package pl.edu.agh.iet.akka_debugging
 
+import java.util.UUID
+
 import akka.actor.Actor
 
 
@@ -7,10 +9,10 @@ trait DistributedStackTraceMessage {
   val stackTrace = Thread.currentThread().getStackTrace
 }
 
-trait DistributedStackTrace {
+trait TracedActor {
   self: Actor =>
 
-  var ZMIENNA = -1
+  var MessageWrapperId: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
   override def aroundReceive(receive: Actor.Receive, msg: Any): Unit = {
     try {

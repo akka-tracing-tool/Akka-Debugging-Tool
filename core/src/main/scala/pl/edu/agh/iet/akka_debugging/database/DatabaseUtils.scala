@@ -1,18 +1,20 @@
 package pl.edu.agh.iet.akka_debugging.database
 
+import java.util.UUID
+
 import com.typesafe.config._
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class CollectorDBMessage(id: Int,
+case class CollectorDBMessage(id: UUID,
                               sender: String,
                               receiver: Option[String] = None) {
   def toJsonString: String = "{\"id\": \"" + id + "\", \"sender\": \"" + sender + "\", \"receiver\": \"" +
     receiver.getOrElse("null") + "\"}"
 }
 
-case class CollectorDBMessagesRelation(id1: Int, id2: Int) {
+case class CollectorDBMessagesRelation(id1: UUID, id2: UUID) {
   def toJsonString: String = "{\"id1\":\"" + id1 + "\", \"id2\": \"" + id2 + "\"}"
 }
 
@@ -28,15 +30,15 @@ object DatabaseUtils {
   import dc.driver.api._
 
   class CollectorDBMessages(tag: Tag) extends Table[CollectorDBMessage](tag, "messages") {
-    def id = column[Int]("id", O.PrimaryKey)
+    def id = column[UUID]("id", O.PrimaryKey)
     def sender = column[String]("sender")
     def receiver = column[Option[String]]("receiver")
     override def * = (id, sender, receiver) <> (CollectorDBMessage.tupled, CollectorDBMessage.unapply)
   }
 
   class CollectorDBMessagesRelations(tag: Tag) extends Table[CollectorDBMessagesRelation](tag, "relation") {
-    def id1 = column[Int]("id1")
-    def id2 = column[Int]("id2")
+    def id1 = column[UUID]("id1")
+    def id2 = column[UUID]("id2")
     def pk = primaryKey("pk", (id1, id2))
     override def * = (id1, id2) <> (CollectorDBMessagesRelation.tupled, CollectorDBMessagesRelation.unapply)
   }
