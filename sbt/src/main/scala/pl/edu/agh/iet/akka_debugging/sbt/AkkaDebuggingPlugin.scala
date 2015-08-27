@@ -1,7 +1,8 @@
 package pl.edu.agh.iet.akka_debugging.sbt
 
-import sbt._
 import AspectsGenerationTask._
+import sbt._
+import sbt.Keys._
 
 object AkkaDebuggingPlugin extends AutoPlugin {
 
@@ -14,12 +15,14 @@ object AkkaDebuggingPlugin extends AutoPlugin {
 
   import Settings._
 
-  override lazy val projectSettings = Seq(
-    aspectsConfigurationFile := "akka_debugging.conf",
-    generateAspectsTask := {
-      println("YEAH")
-      generateAspects(aspectsConfigurationFile.value)
-    }
+  override lazy val projectSettings = inConfig(Compile)(
+    Seq(
+      aspectsConfigurationFile := "akka_debugging.conf",
+      generateAspectsTask := {
+        println("YEAH")
+        generateAspects(resourceDirectory.value, aspectsConfigurationFile.value)
+      }
+    )
   )
 
 }
