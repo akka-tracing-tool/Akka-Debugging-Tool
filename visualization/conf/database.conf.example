@@ -1,3 +1,4 @@
+//Postgres configuration
 driver = "slick.driver.PostgresDriver$"
 db {
   connectionPool = disabled
@@ -7,3 +8,11 @@ db {
   password = ""
   numThreads = 10
 }
+
+//SQLite configuration
+driver = "slick.driver.SQLiteDriver$"
+db {
+  driver = "org.sqlite.JDBC"
+  url = "jdbc:sqlite:<<FILE>>"
+}
+

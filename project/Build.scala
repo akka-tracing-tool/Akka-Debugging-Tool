@@ -63,7 +63,9 @@ object Build extends Build {
         specs2 % Test,
         // Database connections
         "com.typesafe.slick" %% "slick" % SlickVersion,
-        "postgresql" % "postgresql" % "9.1-901.jdbc4"
+        "postgresql" % "postgresql" % "9.1-901.jdbc4",
+        "org.xerial" % "sqlite-jdbc" % "3.8.11.1",
+        "com.zaxxer" % "HikariCP-java6" % "2.3.3"
       ),
       resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
       routesGenerator := InjectedRoutesGenerator
@@ -80,7 +82,9 @@ object Build extends Build {
       libraryDependencies ++= Seq(
         "com.typesafe.slick" %% "slick" % SlickVersion,
         "postgresql" % "postgresql" % "9.1-901.jdbc4",
-        "org.slf4j" % "slf4j-simple" % Slf4jVersion
+        "org.slf4j" % "slf4j-simple" % Slf4jVersion,
+        "org.xerial" % "sqlite-jdbc" % "3.8.11.1",
+        "com.zaxxer" % "HikariCP-java6" % "2.3.3"
       )
     )
     .dependsOn(core)
@@ -95,7 +99,9 @@ object Build extends Build {
       libraryDependencies ++= Seq(
         "com.typesafe.slick" %% "slick" % SlickVersion,
         "postgresql" % "postgresql" % "9.1-901.jdbc4",
-        "org.slf4j" % "slf4j-simple" % Slf4jVersion
+        "org.slf4j" % "slf4j-simple" % Slf4jVersion,
+        "org.xerial" % "sqlite-jdbc" % "3.8.11.1",
+        "com.zaxxer" % "HikariCP-java6" % "2.3.3"
       )
     )
     .dependsOn(core)
