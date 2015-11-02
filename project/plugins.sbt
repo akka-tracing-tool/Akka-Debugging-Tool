@@ -21,4 +21,4 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")
 
 addSbtPlugin("pl.edu.agh.iet" % "akka-debugging-sbt" % "0.0.1-SNAPSHOT")
 
-lazy val plugins = project in file(".") dependsOn file("../sbt")
+lazy val plugins = project in file(".") dependsOn uri("https://github.com/salceson/Akka-Debugging-Tool-SBT-Plugin.git#plugin")

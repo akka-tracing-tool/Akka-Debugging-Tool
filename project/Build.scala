@@ -53,16 +53,6 @@ object Build extends Build {
       libraryDependencies += "org.aspectj" % "aspectjrt" % AspectJVersion
     )
 
-  //  lazy val sbtAspectPlugin = Project("akka-debugging-sbt", file("sbt"))
-  //    .settings(rootSettings: _ *)
-  //    .settings(
-  //      name := "akka-debugging-sbt",
-  //      sbtPlugin := true,
-  //      libraryDependencies += "org.aspectj" % "aspectjweaver" % AspectJVersion,
-  //      libraryDependencies += "org.aspectj" % "aspectjrt" % AspectJVersion
-  //    )
-  //    .dependsOn(core)
-
   lazy val visualization = Project("akka-debugging-tool-visualization", file("visualization"))
     .enablePlugins(PlayScala)
     .settings(rootSettings: _*)
@@ -117,6 +107,5 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
-    //    .dependsOn(sbtAspectPlugin)
     .enablePlugins(AkkaDebuggingPlugin)
 }
