@@ -90,6 +90,7 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
+    .enablePlugins(AkkaDebuggingPlugin)
 
   lazy val oneToManyExample = Project("akka-debugging-tool-examples-one-to-many",
     file("examples/one-to-many"))

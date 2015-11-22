@@ -18,14 +18,14 @@ case class CollectorDBMessagesRelation(id1: UUID, id2: UUID) {
   def toJsonString: String = "{\"id1\":\"" + id1 + "\", \"id2\": \"" + id2 + "\"}"
 }
 
-object DatabaseUtils {
-  val logger: Logger = LoggerFactory.getLogger(DatabaseUtils.getClass)
+class DatabaseUtils(val config: Config) {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
   import slick.backend.DatabaseConfig
   import slick.driver.JdbcProfile
   import slick.jdbc.meta._
 
-  val dc = DatabaseConfig.forConfig[JdbcProfile]("database", ConfigFactory.load("remote_application.conf"))
+  val dc = DatabaseConfig.forConfig[JdbcProfile]("database", config)
 
   import dc.driver.api._
 

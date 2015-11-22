@@ -1,13 +1,15 @@
 package controllers
 
+import com.typesafe.config.ConfigFactory
 import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils
-import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils.{CollectorDBMessages, CollectorDBMessagesRelations}
 import play.api.mvc._
 
 class MainController extends Controller {
-  val dc = DatabaseUtils.getDatabaseConfig
+  val databaseUtils = new DatabaseUtils(ConfigFactory.load)
+  val dc = databaseUtils.getDatabaseConfig
 
   import dc.driver.api._
+  import databaseUtils._
 
   val db = dc.db
   val messages = TableQuery[CollectorDBMessages]

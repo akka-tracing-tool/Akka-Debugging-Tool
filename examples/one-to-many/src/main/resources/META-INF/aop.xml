@@ -1,6 +1,11 @@
+<!--
+    Auto-generated file. Please do not change.
+    Configuration hash: <b7f1a1be8c81bc033f6e39cbe2d6cd33fb3a8cc109a3a97824cd62d5f64ea131084cdea2fb4374ad80984939ee08f06628adcd70320c78bf86f12bcac64c46d0>
+-->
+
 <aspectj>
     <aspects>
-        <aspect name="akka.MethodBangAspect"/>
+        <aspect name="akka.MethodBang"/>
     </aspects>
     <weaver options="-XnoInline">
         <include within="pl.edu.agh.iet.akka_debugging.examples.actors..*"/>

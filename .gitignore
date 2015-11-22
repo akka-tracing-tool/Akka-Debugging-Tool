@@ -75,3 +75,4 @@ crashlytics-build.properties
 
 # Collector
 collector.txt
+*.sqlite
