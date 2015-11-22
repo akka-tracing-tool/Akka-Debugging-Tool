@@ -1,9 +1,0 @@
-<aspectj>
-    <aspects>
-        <aspect name="akka.MethodBangAspect"/>
-    </aspects>
-    <weaver options="-XnoInline">
-        <include within="pl.edu.agh.iet.akka_debugging.examples.actors..*"/>
-        <include within="akka.*"/>
-    </weaver>
-</aspectj>
