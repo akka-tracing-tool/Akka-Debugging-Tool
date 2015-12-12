@@ -1,4 +1,4 @@
-import pl.edu.agh.iet.akka_debugging.sbt.AkkaDebuggingPlugin
+import pl.edu.agh.iet.akka_debugging.sbt.AkkaTracingPlugin
 import play.sbt.PlayImport._
 import play.sbt.PlayScala
 import play.sbt.routes.RoutesKeys._
@@ -90,7 +90,7 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
-    .enablePlugins(AkkaDebuggingPlugin)
+    .enablePlugins(AkkaTracingPlugin)
 
   lazy val oneToManyExample = Project("akka-debugging-tool-examples-one-to-many",
     file("examples/one-to-many"))
@@ -108,5 +108,5 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
-    .enablePlugins(AkkaDebuggingPlugin)
+    .enablePlugins(AkkaTracingPlugin)
 }

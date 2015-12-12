@@ -23,7 +23,7 @@ trait TracedActor {
 //        val oldStackTrace = exception.getStackTrace
 //        val newStackTrace = oldStackTrace ++ msg.asInstanceOf[DistributedStackTraceMessage].stackTrace
 //        exception.setStackTrace(newStackTrace)
-//        throw exception
+        throw exception
     }
   }
 }
