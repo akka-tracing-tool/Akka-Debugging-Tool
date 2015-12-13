@@ -80,5 +80,3 @@ project/boot/
 .cache
 
 src/main/resources/database.conf
-
-

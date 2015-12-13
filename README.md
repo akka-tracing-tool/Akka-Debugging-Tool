@@ -1,7 +1,7 @@
-Akka-Debugging-Tool
-===================
+Akka Tracing Tool - Examples
+============================
 
-Debugging toolkit for Akka
+Tracing toolkit for Akka
 
 # Config file
 

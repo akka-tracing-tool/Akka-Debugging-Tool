@@ -78,7 +78,3 @@ src_managed/
 project/boot/
 .history
 .cache
-
-src/main/resources/database.conf
-
-

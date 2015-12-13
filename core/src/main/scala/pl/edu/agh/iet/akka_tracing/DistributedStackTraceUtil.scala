@@ -1,4 +1,4 @@
-package pl.edu.agh.iet.akka_debugging
+package pl.edu.agh.iet.akka_tracing
 
 import java.util.UUID
 
@@ -23,7 +23,7 @@ trait TracedActor {
 //        val oldStackTrace = exception.getStackTrace
 //        val newStackTrace = oldStackTrace ++ msg.asInstanceOf[DistributedStackTraceMessage].stackTrace
 //        exception.setStackTrace(newStackTrace)
-//        throw exception
+        throw exception
     }
   }
 }

@@ -1,7 +1,7 @@
-package pl.edu.agh.iet.akka_debugging.examples.actors
+package pl.edu.agh.iet.akka_tracing.examples.actors
 
 import akka.actor.{Actor, ActorRef, Props}
-import pl.edu.agh.iet.akka_debugging.TracedActor
+import pl.edu.agh.iet.akka_tracing.TracedActor
 
 object SecondActor {
   def props(actorRef: ActorRef): Props = Props(classOf[SecondActor], actorRef)

@@ -1,3 +1,4 @@
+import pl.edu.agh.iet.akka_tracing.sbt.AkkaTracingPlugin
 import play.sbt.PlayImport._
 import play.sbt.PlayScala
 import play.sbt.routes.RoutesKeys._
@@ -14,6 +15,7 @@ object Build extends Build {
   val SlickVersion = "3.0.0"
   val ConfigVersion = "1.3.0"
   val AkkaVersion = "2.3.9"
+  val AspectJVersion = "1.7.2"
 
   val rootSettings = Seq(
     version := appVersion,
@@ -30,10 +32,10 @@ object Build extends Build {
     )
   )
 
-  lazy val root = Project("akka-debugging-tool", file("."))
+  lazy val root = Project("akka-tracing-tool", file("."))
     .settings(rootSettings: _*)
     .settings(
-      name := "akka-debugging-tool",
+      name := "akka-tracing-tool",
       publish := {},
       publishArtifact := false
     )
@@ -43,19 +45,19 @@ object Build extends Build {
       simpleScenarioExample
     )
 
-  lazy val core = Project("akka-debugging-tool-core", file("core"))
+  lazy val core = Project("akka-tracing-tool-core", file("core"))
     .settings(rootSettings: _*)
     .settings(
-      name := "akka-debugging-tool-core",
-      libraryDependencies += "org.aspectj" % "aspectjweaver" % "1.7.2",
-      libraryDependencies += "org.aspectj" % "aspectjrt" % "1.7.2"
+      name := "akka-tracing-tool-core",
+      libraryDependencies += "org.aspectj" % "aspectjweaver" % AspectJVersion,
+      libraryDependencies += "org.aspectj" % "aspectjrt" % AspectJVersion
     )
 
-  lazy val visualization = Project("akka-debugging-tool-visualization", file("visualization"))
+  lazy val visualization = Project("akka-tracing-tool-visualization", file("visualization"))
     .enablePlugins(PlayScala)
     .settings(rootSettings: _*)
     .settings(
-      name := "akka-debugging-tool-visualization",
+      name := "akka-tracing-tool-visualization",
       libraryDependencies ++= Seq(
         jdbc,
         cache,
@@ -72,11 +74,11 @@ object Build extends Build {
     )
     .dependsOn(core)
 
-  lazy val simpleScenarioExample = Project("akka-debugging-tool-examples-simple-scenario",
+  lazy val simpleScenarioExample = Project("akka-tracing-tool-examples-simple-scenario",
     file("examples/simple-scenario"))
     .settings(rootSettings: _*)
     .settings(
-      name := "akka-debugging-tool-examples-simple-scenario",
+      name := "akka-tracing-tool-examples-simple-scenario",
       sources in(Compile, doc) := Seq.empty,
       publishArtifact in(Compile, packageDoc) := false,
       libraryDependencies ++= Seq(
@@ -88,12 +90,13 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
+    .enablePlugins(AkkaTracingPlugin)
 
-  lazy val oneToManyExample = Project("akka-debugging-tool-examples-one-to-many",
+  lazy val oneToManyExample = Project("akka-tracing-tool-examples-one-to-many",
     file("examples/one-to-many"))
     .settings(rootSettings: _*)
     .settings(
-      name := "akka-debugging-tool-examples-one-to-many",
+      name := "akka-tracing-tool-examples-one-to-many",
       sources in(Compile, doc) := Seq.empty,
       publishArtifact in(Compile, packageDoc) := false,
       libraryDependencies ++= Seq(
@@ -105,4 +108,5 @@ object Build extends Build {
       )
     )
     .dependsOn(core)
+    .enablePlugins(AkkaTracingPlugin)
 }
