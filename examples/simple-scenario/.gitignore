@@ -80,7 +80,3 @@ project/boot/
 .cache
 
 src/main/resources/database.conf
-
-### Akka Debugging Files
-src/main/scala/akka/MethodBang.scala
-src/main/resources/META-INF/aop.xml

@@ -1,7 +1,7 @@
 package controllers
 
 import com.typesafe.config.ConfigFactory
-import pl.edu.agh.iet.akka_debugging.database.DatabaseUtils
+import pl.edu.agh.iet.akka_tracing.database.DatabaseUtils
 import play.api.mvc._
 
 class MainController extends Controller {

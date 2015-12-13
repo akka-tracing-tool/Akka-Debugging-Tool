@@ -78,7 +78,3 @@ src_managed/
 project/boot/
 .history
 .cache
-
-### Akka Debugging Files
-src/main/scala/akka/MethodBang.scala
-src/main/resources/META-INF/aop.xml

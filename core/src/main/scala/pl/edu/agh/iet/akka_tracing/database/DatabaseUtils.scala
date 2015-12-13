@@ -1,4 +1,4 @@
-package pl.edu.agh.iet.akka_debugging.database
+package pl.edu.agh.iet.akka_tracing.database
 
 import java.util.UUID
 

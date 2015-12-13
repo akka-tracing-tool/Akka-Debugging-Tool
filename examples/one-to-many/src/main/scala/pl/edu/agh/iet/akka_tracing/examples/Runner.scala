@@ -1,7 +1,7 @@
-package pl.edu.agh.iet.akka_debugging.examples
+package pl.edu.agh.iet.akka_tracing.examples
 
 import akka.actor.{ActorSystem, Props}
-import pl.edu.agh.iet.akka_debugging.examples.actors.{FirstActor, SecondActor}
+import pl.edu.agh.iet.akka_tracing.examples.actors.{FirstActor, SecondActor}
 
 import scala.util.Random
 

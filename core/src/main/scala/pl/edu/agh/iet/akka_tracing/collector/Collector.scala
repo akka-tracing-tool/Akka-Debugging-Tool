@@ -1,10 +1,10 @@
-package pl.edu.agh.iet.akka_debugging.collector
+package pl.edu.agh.iet.akka_tracing.collector
 
 import java.util.UUID
 
 import akka.actor.{Actor, Props}
 import com.typesafe.config._
-import pl.edu.agh.iet.akka_debugging.database.{CollectorDBMessage, CollectorDBMessagesRelation, DatabaseUtils}
+import pl.edu.agh.iet.akka_tracing.database.{DatabaseUtils, CollectorDBMessagesRelation, CollectorDBMessage}
 
 import scala.concurrent.{ExecutionContext, Await}
 import scala.concurrent.duration._
@@ -25,10 +25,6 @@ trait Collector extends Actor {
   private[collector] def handleCollectorMessage(msg: CollectorMessage): Unit
 
   private[collector] def handleRelationMessage(msg: RelationMessage): Unit
-
-  private[collector] def filterStackTrace(stackTrace: Array[StackTraceElement]): Array[StackTraceElement] = {
-    stackTrace.filter(el => !el.toString.startsWith("akka") && !el.toString.startsWith("scala"))
-  }
 
   override def receive: Receive = {
     case msg: CollectorMessage =>
