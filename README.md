@@ -5,40 +5,25 @@ Tracing toolkit for Akka
 
 # Config file
 
-Please rename config file (delete the `.example` or `template` suffix) and fill it in with your database configuration 
-in following projects:
+Please fill in the config files `src/main/resources/akka_tracing.conf` in each of the scenarios with correct database
+configuration or use the provided ones.
 
-* Visualization (in folder `conf`).
-* Example scenario (in folder `src/main/resources`).
+# How to run
 
-# How to run (at this moment)
-
-First, you need to publish (locally) the core part:
+Launch sbt:
 
 ```
 $ sbt
-> project akka-debugging-tool-core
-> publishLocal
 ```
 
-Next, you need to compile the whole project:
+Then switch to the correct project (one of `simpleScenario` or `oneToMany`) by:
 
 ```
-$ sbt compile
+> project <projectName>
 ```
 
-Next, to run the example:
+Then run the `run` task by:
 
 ```
-$ sbt
-> project akka-debugging-tool-examples-simple-scenario
-> run
-```
-
-To run the Visualization tool:
-
-```
-$ sbt
-> project akka-debugging-tool-visualization
 > run
 ```
