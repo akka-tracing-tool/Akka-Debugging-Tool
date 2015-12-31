@@ -2,6 +2,6 @@ language: scala
 scala:
 - 2.11.7
 script:
-- sbt clean test
+- pushd one-to-many && sbt clean test && popd && pushd simple-scenario && sbt clean test && popd
 jdk:
 - oraclejdk8
