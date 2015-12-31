@@ -10,16 +10,16 @@ configuration or use the provided ones.
 
 # How to run
 
-Launch sbt:
+Switch to the correct project (one of `simpleScenario` or `oneToMany`) by:
+
+```
+$ cd <projectName>
+```
+
+Then launch SBT by:
 
 ```
 $ sbt
-```
-
-Then switch to the correct project (one of `simpleScenario` or `oneToMany`) by:
-
-```
-> project <projectName>
 ```
 
 Then run the `run` task by:
