@@ -20,7 +20,8 @@ val libDependencies = Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "org.xerial" % "sqlite-jdbc" % "3.8.11.1",
   "org.slf4j" % "slf4j-api" % Slf4jVersion,
-  "org.slf4j" % "slf4j-simple" % Slf4jVersion
+  "org.slf4j" % "slf4j-simple" % Slf4jVersion,
+  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
 
 libraryDependencies ++= libDependencies
