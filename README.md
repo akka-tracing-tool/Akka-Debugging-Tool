@@ -27,3 +27,16 @@ Then run the `run` task by:
 ```
 > run
 ```
+
+# Integration test (simple scenario only)
+
+In simple scenario there is an integration test of our library.
+
+You can execute it by:
+
+```
+$ sbt test
+```
+
+**WARNING!** The test does not terminate the `java` process that `sbt` spawns - you need to do it yourself!
+
