@@ -1,8 +1,10 @@
+package pl.edu.agh.iet.akka_tracing.examples
+
 import java.io.File
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.FlatSpec
-import pl.edu.agh.iet.akka_tracing.database.DatabaseUtils
+import pl.edu.agh.iet.akka_tracing.utils.DatabaseUtils
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -16,15 +18,14 @@ class IntegrationTestSpec extends FlatSpec {
 
     val dbConfigFile = new File(getClass.getResource("/database.conf").toURI)
     val dbUtils = new DatabaseUtils(ConfigFactory.parseFile(dbConfigFile))
-    val dc = dbUtils.getDatabaseConfig
-    val db = dc.db
 
-    import dc.driver.api._
+    import dbUtils._
+    import dc.profile.api._
 
-    val countMessagesQuery = sql"""select count(*) from "messages"""".as[Int]
-    val countRelationQuery = sql"""select count(*) from "relation"""".as[Int]
-    val messagesRowsCount = Await.result(db.run(countMessagesQuery), 1 seconds).head
-    val relationRowsCount = Await.result(db.run(countRelationQuery), 1 seconds).head
+    val countMessagesQuery = messages.size.result
+    val countRelationQuery = relations.size.result
+    val messagesRowsCount = Await.result(db.run(countMessagesQuery), 1 second)
+    val relationRowsCount = Await.result(db.run(countRelationQuery), 1 second)
 
     assert(messagesRowsCount === 20)
     assert(relationRowsCount === 20)
