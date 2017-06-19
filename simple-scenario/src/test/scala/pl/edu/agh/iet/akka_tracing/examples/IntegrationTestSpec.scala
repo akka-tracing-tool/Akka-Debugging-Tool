@@ -22,12 +22,15 @@ class IntegrationTestSpec extends FlatSpec {
     import dbUtils._
     import dc.profile.api._
 
-    val countMessagesQuery = messages.size.result
+    val countSenderMessagesQuery = senderMessages.size.result
+    val countReceiverMessagesQuery = receiverMessages.size.result
     val countRelationQuery = relations.size.result
-    val messagesRowsCount = Await.result(db.run(countMessagesQuery), 1 second)
+    val senderMessagesRowsCount = Await.result(db.run(countSenderMessagesQuery), 1 second)
+    val receiverMessagesRowsCount = Await.result(db.run(countReceiverMessagesQuery), 1 second)
     val relationRowsCount = Await.result(db.run(countRelationQuery), 1 second)
 
-    assert(messagesRowsCount === 20)
+    assert(senderMessagesRowsCount === 20)
+    assert(receiverMessagesRowsCount === 20)
     assert(relationRowsCount === 20)
 
     new ProcessBuilder("sbt", "cleanDatabase").start().waitFor()
