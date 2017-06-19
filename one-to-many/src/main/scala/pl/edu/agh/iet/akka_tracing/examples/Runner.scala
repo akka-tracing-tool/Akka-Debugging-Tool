@@ -11,6 +11,9 @@ object Runner {
 
   def main(args: Array[String]) {
     val system = ActorSystem()
+
+    import system.dispatcher
+
     val secondActors = system.actorOf(Props[SecondActor], "secondActor1") ::
       system.actorOf(Props[SecondActor], "secondActor2") ::
       system.actorOf(Props[SecondActor], "secondActor3") ::
@@ -23,6 +26,8 @@ object Runner {
       println(x)
       Thread.sleep(300)
     }
-    system.shutdown()
+
+    Thread.sleep(5000)
+    system.terminate().foreach(_ => System.exit(0))
   }
 }

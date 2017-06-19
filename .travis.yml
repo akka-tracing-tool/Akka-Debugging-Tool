@@ -3,6 +3,6 @@ scala:
 - 2.11.7
 script:
 - pushd one-to-many && sbt clean test && popd && pushd simple-scenario && sbt clean test && popd
-- killall -9 java
+- killall -9 java || exit 0
 jdk:
 - oraclejdk8
